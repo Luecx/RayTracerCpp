@@ -5,19 +5,25 @@
 #include "Triangle.h"
 
 Triangle::Triangle(const Vector &a, const Vector &b, const Vector &c) {
-
+    this->points[0] = a;
+    this->points[1] = b;
+    this->points[2] = c;
 }
 
 Triangle::Triangle(const Vector *points) {
-
+    this->points[0] = points[0];
+    this->points[1] = points[1];
+    this->points[2] = points[2];
 }
 
 Triangle::Triangle(Triangle &other) {
-
+    this->points[0] = other[0];
+    this->points[1] = other[1];
+    this->points[2] = other[2];
 }
 
 Triangle::Triangle(const Triangle &a, const Triangle &b) {
-
+    // TODO
 }
 
 Triangle::~Triangle() {
