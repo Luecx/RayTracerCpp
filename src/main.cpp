@@ -4,6 +4,7 @@
 #include "Vector.h"
 #include "types.h"
 #include "intersect.h"
+#include "file_io.h"
 
 int main() {
 
@@ -38,9 +39,11 @@ int main() {
 //    std::cout << intersection.base << std::endl;
 //    std::cout << intersection.direction << std::endl;
 
-    AABB aabb{{0,0,0}, {1,1,1}};
-    Ray  r{{0.5,3,0.5},{0.1,-0.89,0}};
+//    AABB aabb{{0,0,0}, {1,1,1}};
+//    Ray  r{{0.5,3,0.5},{0.1,-0.89,0}};
 
-    std::cout << intersect_ray_aabb(r, aabb);
+//    std::cout << intersect_ray_aabb(r, aabb);
+
+    readFile("../Test.obj");
 
 }
