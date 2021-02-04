@@ -13,6 +13,7 @@
 enum FPSettings{
     WIDTH,
     HEIGHT,
+    KD_TREE_MAX_DEPTH,
     END_DOUBLE_SETTINGS, // always have this at the end
 };
 

@@ -5,8 +5,9 @@
 #include "Config.h"
 
 Config::Config() {
-    (*this)[WIDTH]  = 720;
-    (*this)[HEIGHT] = 480;
+    (*this)[WIDTH]              = 720;
+    (*this)[HEIGHT]             = 480;
+    (*this)[KD_TREE_MAX_DEPTH]  = 8;
 }
 
 Config::Config(const Config &config) {
