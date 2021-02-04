@@ -64,8 +64,6 @@ public:
      */
     const Triangle* splitTriangle();
 
-    double intersect(Ray &ray);
-
     /**
      * Scales the triangle by scale.
      * @param scale is the scaled factor

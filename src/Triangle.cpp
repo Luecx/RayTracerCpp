@@ -87,8 +87,3 @@ bool Triangle::operator!=(const Triangle &rhs) const {
 const Vector *Triangle::getPoints() const {
     return points;
 }
-
-double Triangle::intersect(Ray &ray) {
-    // TODO
-    return 1.0 / 0;
-}
