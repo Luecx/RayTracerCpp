@@ -7,13 +7,8 @@
 
 #include "Vector.h"
 
-class Ray {
-private:
-    Vector base{3};
-    Vector direction{3};
+struct Ray {
 
-public:
-    Ray(const Vector &base, const Vector &direction);
 };
 
 
