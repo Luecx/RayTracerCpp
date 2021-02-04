@@ -66,6 +66,10 @@ Vector &Triangle::operator[](int index) {
     return points[index];
 }
 
+Vector Triangle::operator[](int index) const {
+    return points[index];
+}
+
 std::ostream &operator<<(std::ostream &os, const Triangle &triangle) {
     os << "x: " << triangle.points[0] << ", y: " << triangle.points[1] << ", z: " << triangle.points[2];
     return os;
