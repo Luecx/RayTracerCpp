@@ -19,13 +19,13 @@ private:
 public:
 
 
-    explicit Vector();
-    explicit Vector(int size);
+    Vector();
+    Vector(int size);
+    Vector(double x, double y, double z);
     Vector(const Vector& vec);
     Vector(Vector&& vec) noexcept ;
     virtual ~Vector();
     Vector& operator=(const Vector& vec);
-    Vector& operator=(Vector&& vec) noexcept ;
 
     int     entryCount();
 
