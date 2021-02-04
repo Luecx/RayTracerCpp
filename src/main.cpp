@@ -40,7 +40,7 @@ int main() {
 //    std::cout << intersection.base << std::endl;
 //    std::cout << intersection.direction << std::endl;
 
-//    AABB aabb{{0,0,0}, {1,1,1}};
+    AABB aabb{{0,0,0}, {1,1,1}};
 //    Ray  r{{0.5,3,0.5},{0.1,-0.89,0}};
 
 //    std::cout << intersect_ray_aabb(r, aabb);
@@ -48,7 +48,12 @@ int main() {
 
     double start = clock();
 
-    auto donat = readFile("../Test.obj");
+    std::vector<Triangle> triangles = readFile("../res/cube.obj");
 
-    std::cout << "Time need for readOBJ " << ((clock() - start) / CLOCKS_PER_SEC) << " sec." << std::endl;
+    time += clock() - start;
+
+    KdNode kdNode{aabb, triangles, 1};
+
+    time = time / CLOCKS_PER_SEC;
+    std::cout << "Time need for readOBJ " << time << " sec." << std::endl;
 }

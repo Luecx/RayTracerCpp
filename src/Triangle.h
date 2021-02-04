@@ -107,14 +107,6 @@ public:
 
     bool operator!=(const Triangle &rhs) const;
 
-    bool operator<(const Triangle &rhs) const;
-
-    bool operator>(const Triangle &rhs) const;
-
-    bool operator<=(const Triangle &rhs) const;
-
-    bool operator>=(const Triangle &rhs) const;
-
     friend std::ostream &operator<<(std::ostream &os, const Triangle &triangle);
 
 };

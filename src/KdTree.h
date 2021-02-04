@@ -39,6 +39,10 @@ struct KdNode{
                              {return t1.center()[longestAxis]
                                    < t2.center()[longestAxis];});
 
+            for(Triangle& t:p_triangles){
+
+            }
+
 //            left  = new KdNode(triangles, depth-1);
 //            right = new KdNode(triangles, depth-1);
         }
