@@ -20,6 +20,14 @@ public:
      * @param b The position for b
      * @param c The position for c
      */
+    Triangle(const Vector &&a, const Vector &&b, const Vector &&c);
+
+    /**
+     * Creates a triangle with points a, b, c
+     * @param a The position for a
+     * @param b The position for b
+     * @param c The position for c
+     */
     Triangle(const Vector &a, const Vector &b, const Vector &c);
     /**
      * Creates a triangle from a list of points that is always 3 in size and starts with a and ends with c.

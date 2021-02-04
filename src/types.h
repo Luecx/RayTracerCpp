@@ -18,4 +18,9 @@ struct Ray {
     Vector direction{};
 };
 
+struct AABB {
+    Vector min{};
+    Vector max{};
+};
+
 #endif //RAYTRACER_PLANE_H

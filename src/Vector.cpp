@@ -107,7 +107,7 @@ double Vector::dot(const Vector &other) {
 
     double res = 0;
     for(int i = 0; i < size; i++){
-        res += this->values[i] * this->values[i];
+        res += this->values[i] * other.values[i];
     }
     return res;
 
