@@ -8,8 +8,6 @@
 
 #include <ostream>
 #include "Vector.h"
-#include "types.h"
-#include "intersect.h"
 
 class Triangle {
 private:
