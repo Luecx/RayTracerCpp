@@ -43,15 +43,7 @@ const Vector &Triangle::getC() {
 }
 
 Vector Triangle::center() {
-    Vector center{3};
-
-    // TODO
-
-    center[0] = getA()[0];
-    center[1] = 0.0;
-    center[2] = 0.0;
-
-    return center;
+    return (points[0] + points[1] + points[2]) * (1/3.0);
 }
 
 const Triangle *Triangle::splitTriangle() {

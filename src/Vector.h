@@ -48,6 +48,7 @@ public:
     Vector& operator-=(const Vector& vec);
 
     Vector& operator*=(double scalar);
+    Vector  operator* (double scalar);
     double  operator* (const Vector& other);
 
     double& operator()(int index);

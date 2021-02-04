@@ -200,6 +200,12 @@ Vector &Vector::operator*=(const double scalar) {
     return this->scale(scalar);
 }
 
+Vector Vector::operator*(double scalar){
+    Vector v{*this};
+    v.scale(scalar);
+    return v;
+}
+
 double Vector::operator*(const Vector &other) {
     return dot(other);
 }
