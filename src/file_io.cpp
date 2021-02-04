@@ -22,7 +22,7 @@ std::vector<Triangle> readFile(std::string filename) {
     while (getline(File, text)) {
         isV = text[0] == 'v';
 
-        if (isV || text[0] == 'f') {
+        if ((isV || text[0] == 'f') && text[1] == ' ') {
             text.erase(0, 2);
 
             int tempI = text.find(' ');
