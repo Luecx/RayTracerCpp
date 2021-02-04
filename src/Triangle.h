@@ -8,7 +8,8 @@
 
 #include <ostream>
 #include "Vector.h"
-#include "Ray.h"
+#include "types.h"
+#include "intersect.h"
 
 class Triangle {
 private:
@@ -99,8 +100,6 @@ public:
 
 
     friend std::ostream &operator<<(std::ostream &os, const Triangle &triangle);
-
-
 
 };
 

@@ -3,6 +3,7 @@
 //
 
 #include "Triangle.h"
+#include "types.h"
 
 Triangle::Triangle(const Vector &a, const Vector &b, const Vector &c) {
     this->points[0] = a;
