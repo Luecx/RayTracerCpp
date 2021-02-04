@@ -28,28 +28,37 @@ int main() {
 //    Vector v2{3};
 //    v2 = -v1;
 
+//    Triangle t{{0,0,1},{-1,0,1},{-1,-1,1}};
 //    Plane p{{0,0,0},{0,1,0}};
+//    Ray r = intersect_triangle_plane(t, p);
+//    std::cout << r.base << " " << r.direction;
+
 //    Ray   r{{1,1,1},{0,-1,0}};
 //    std::cout << intersect_ray_plane(r, p) << std::endl;
 //
 //
 //    std::cout << r.base + (r.direction * 1) << std::endl;
 
-//    Triangle t{{1,1,0},{-1,0,0},{1,-1,1}};
-//    Plane p{{0,0,0},{0,1,0}};
+
 //    Ray intersection = intersect_triangle_plane(t, p);
 //    std::cout << intersection.base << std::endl;
 //    std::cout << intersection.direction << std::endl;
 
-    AABB aabb{{0,0,0}, {1,1,1}};
+//    AABB aabb{{0,0,0}, {1,1,1}};
 //    Ray  r{{0.5,3,0.5},{0.1,-0.89,0}};
 
 //    std::cout << intersect_ray_aabb(r, aabb);
 
 
-    double start = clock();
-
+//    double start = clock();
+//
     std::vector<Triangle> triangles = readFile("../res/cube.obj");
+
+    KdTree kdNode{triangles, 4, 0};
+
+
+//    std::cout << "Time need for readOBJ " << ((clock() - start) / CLOCKS_PER_SEC) << " sec." << std::endl;
+
 
     KdNode kdNode{aabb, triangles, 1};
     std::cout << "Time need for readOBJ " << (clock() - start) << "ms." << std::endl;

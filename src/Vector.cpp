@@ -231,7 +231,7 @@ std::ostream &operator<<(std::ostream &os, const Vector &vector) {
     os << "[";
 
     for (int i = 0; i < vector.size; i++) {
-        os << std::setprecision(5) << std::setw(15) << vector.values[i];
+        os << std::setprecision(10) << std::setw(18) << vector.values[i];
     }
 
     return os << "]";

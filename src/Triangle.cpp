@@ -3,7 +3,7 @@
 //
 
 #include "Triangle.h"
-
+#include "intersect.h"
 
 Triangle::Triangle() {}
 
@@ -64,8 +64,116 @@ Vector Triangle::center() const{
     return (points[0] + points[1] + points[2]) * (1/3.0);
 }
 
-const Triangle *Triangle::splitTriangle() {
-    return nullptr;
+void Triangle::splitTriangle(Plane &p, std::vector<Triangle> &lhs, std::vector<Triangle> &rhs) {
+
+    Ray intersection = intersect_triangle_plane(*this, p);
+    // check if its split by the plane
+    if(intersection.direction.mag_squared() <= EPSILON){
+        return;
+    }
+
+    // count the amount of nodes cut. if we cut more than 1 node, we will not cut the triangle at all
+    bool help = false;
+    for(int i = 0; i < 3; i++){
+        if((this->points[i] - intersection.base).mag_squared() <= EPSILON){
+            if(!help){
+                help = true;
+            }else{
+                return;
+            }
+        }
+    }
+    // determine if a node is cut or not. if so we can split into two triangles, if not we need 3.
+    for(int i = 0; i < 3; i++){
+        if((this->points[i] - intersection.base).mag_squared() <= EPSILON){
+            Vector p1 = intersection.base;
+            Vector p2 = intersection.base + intersection.direction;
+
+            Vector v1 = this->points[(i+1)%3];
+            Vector v2 = this->points[(i+2)%3];
+
+            Triangle t1 = {p1,p2,v1};
+            Triangle t2 = {p2,p1,v2};
+
+            double center_side = (center() - p.base) * p.normal;
+
+            if((t1.center() - p.base) * p.normal * center_side >= 0){
+                // check if triangle is on the lhs
+                (*this) = t1;
+                rhs.emplace_back(t2);
+            }else if((t2.center() - p.base) * p.normal * center_side >= 0){
+                // check if t2 is on the lhs
+                (*this) = t2;
+                rhs.emplace_back(t1);
+            }else{
+                std::exit(-1);
+            }
+            return;
+        }
+    }
+
+    // if no vertex was laying on an edge, we need to compute the new triangles.
+    // For this purpose, we need to figure out which edges are intersected.
+    // we check which node is being cut off.
+    Ray r1 {points[0], points[1]-points[0]};  // connection p0-p1
+    Ray r2 {points[1], points[2]-points[1]};  // connection p1-p2
+    Ray r3 {points[2], points[0]-points[2]};  // connection p0-p2
+    double c1 = intersect_ray_plane(r1, p);
+    double c2 = intersect_ray_plane(r2, p);
+    double c3 = intersect_ray_plane(r3, p);
+
+    Vector cutoff;
+    Vector v1;
+    Vector v2;
+
+    Vector cut1 = intersection.base;
+    Vector cut2 = intersection.base + intersection.direction;
+
+    // B is cutoff
+    if(c1 < 1 && c2 < 1){
+        cutoff  = this->getB();
+        v1      = this->getA();
+        v2      = this->getC();
+    }
+    // A is cutoff
+    else if(c1 < 1 && c3 < 1){
+        cutoff  = this->getA();
+        v1      = this->getB();
+        v2      = this->getC();
+    }
+    // C is cutoff
+    else if(c2 < 1 && c3 < 1){
+        cutoff  = this->getC();
+        v1      = this->getA();
+        v2      = this->getB();
+    }
+    else{
+        exit(-1);
+    }
+
+    // make sure the quad has a positive jacobian
+    if((v2-cut2).mag() + (v1-cut1).mag() > (v1-cut2).mag() + (v2-cut1).mag()){
+        Vector h = cut1;
+        cut1 = cut2;
+        cut2 = h;
+    }
+
+    Triangle triC{cut1, cut2, cutoff};
+    Triangle tri1{cut1, cut2, v1};
+    Triangle tri2{  v1, cut2, v2};
+
+    // check if the node which has been cut has been on the same side as the original triangle
+    // this is true if (c-b) * n where b is the basepoint of the plane and n its normal has the same sign.
+    if(((cutoff-p.base) * p.normal) * ((center()-p.base) * p.normal) >= 0){
+        (*this) = triC;
+        rhs.emplace_back(tri1);
+        rhs.emplace_back(tri2);
+    }else{
+        (*this) = tri1;
+        lhs.emplace_back(tri2);
+        rhs.emplace_back(triC);
+    }
+
 }
 
 Triangle &Triangle::operator*=(double scale) {
@@ -88,7 +196,7 @@ Vector Triangle::operator[](int index) const {
 }
 
 std::ostream &operator<<(std::ostream &os, const Triangle &triangle) {
-    os << "x: " << triangle.points[0] << ", y: " << triangle.points[1] << ", z: " << triangle.points[2];
+    os << "A: " << triangle.points[0] << ", B: " << triangle.points[1] << ", C: " << triangle.points[2];
     return os;
 }
 

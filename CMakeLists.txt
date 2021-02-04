@@ -9,6 +9,7 @@ add_executable(RayTracer
         src/Config.cpp src/Config.h
         src/Triangle.cpp src/Triangle.h
         src/types.h
+        src/KdTree.cpp src/KdTree.h
         src/intersect.cpp src/intersect.h
         src/file_io.h src/file_io.cpp src/Image.cpp src/Image.h)
 

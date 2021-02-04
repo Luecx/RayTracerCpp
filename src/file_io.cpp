@@ -6,11 +6,28 @@
 #include <iostream>
 #include "file_io.h"
 
-void writeFile(std::string &filename, std::vector<Triangle> &triangles) {
-    // TODO
+void writeFile(const std::string &filename, std::vector<Triangle> &triangles) {
+    std::ofstream myfile (filename);
+    if (myfile.is_open()){
+
+        for(Triangle& t:triangles){
+            myfile << "v " << t.getA()[0] << " " << t.getA()[1] << " " << t.getA()[2] << "\n";
+            myfile << "v " << t.getB()[0] << " " << t.getB()[1] << " " << t.getB()[2] << "\n";
+            myfile << "v " << t.getC()[0] << " " << t.getC()[1] << " " << t.getC()[2] << "\n";
+        }
+
+        int index = 1;
+        for(Triangle& t:triangles){
+            myfile << "f " << (index ++) << " " << (index ++) << " " << (index ++) << "\n";
+        }
+
+    }else{
+        std::cout << "could not open " << filename << std::endl;
+    }
+    myfile.close();
 }
 
-std::vector<Triangle> readFile(std::string filename) {
+std::vector<Triangle> readFile(const std::string &filename) {
     std::string text;
 
     std::ifstream File(filename);

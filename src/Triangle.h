@@ -7,7 +7,9 @@
 
 
 #include <ostream>
+#include <vector>
 #include "Vector.h"
+#include "types.h"
 
 class Triangle {
 private:
@@ -71,9 +73,12 @@ public:
     Vector center() const;
 
     /**
-     * @return Two triangles that together form the old triangle.
+     * Splits the triangle into 2 or 3 triangles if intersected by the given plane
+     * and A) adjusts its own vertices to be one of the triangles and adds the remaining
+     * triangles into the given vector. We assume that the center of the triangle is currently on the lhs
+     * and triangles split away from the triangle will be places in rhs
      */
-    const Triangle* splitTriangle();
+    void splitTriangle(Plane &p,  std::vector<Triangle> &lhs, std::vector<Triangle> &rhs);
 
     /**
      * Scales the triangle by scale.

@@ -9,7 +9,7 @@
 #include "Triangle.h"
 #include "KdTree.h"
 
-#define EPSILON 1e-10
+#define EPSILON 1e-18
 
 
 double intersect_ray_triangle     (Ray &r, Triangle &t);

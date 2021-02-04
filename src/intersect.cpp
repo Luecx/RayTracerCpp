@@ -7,21 +7,11 @@
 #include "types.h"
 #include <cmath>
 
-double intersect_ray_plane(Ray &r, Plane &p) {
-    double denom = p.normal * r.direction;
-    if(std::abs(denom) <EPSILON){
-        return 1.0 / 0.0;
-    }
-    double numer = p.normal * (p.base - r.base);
-    return numer / denom;
-}
-
 Ray intersect_triangle_plane(Triangle &t, Plane &p) {
 
     Vector p1{};
     Vector p2{};
     bool foundFirst = false;
-
 
     Vector r1{}, r2{}, r3{};
 
@@ -29,13 +19,13 @@ Ray intersect_triangle_plane(Triangle &t, Plane &p) {
     double s2 = (t[1]-p.base)*p.normal;
     double s3 = (t[2]-p.base)*p.normal;
 
-    // check if any points lie directly in the plane
-    if(std::abs(s1) < EPSILON || std::abs(s2) < EPSILON || std::abs(s3) < EPSILON ){
-        if(std::abs(s1) < EPSILON){
+    // check if any points lie directly in the plane. If two lay on the plane, we consider it as NO intersection!
+    if(std::abs(s1) <= EPSILON || std::abs(s2) <= EPSILON || std::abs(s3) <= EPSILON ){
+        if(std::abs(s1) <= EPSILON){
             p1 = t[0];
             foundFirst = true;
         }
-        if(std::abs(s2) < EPSILON){
+        if(std::abs(s2) <= EPSILON){
             if(foundFirst){
                 p2 = t[1];
                 return {p1, p2};
@@ -44,7 +34,7 @@ Ray intersect_triangle_plane(Triangle &t, Plane &p) {
                 foundFirst = true;
             }
         }
-        if(std::abs(s3) < EPSILON ){
+        if(std::abs(s3) <= EPSILON ){
             if(foundFirst){
                 p2 = t[2];
                 return {p1, p2};
@@ -68,7 +58,7 @@ Ray intersect_triangle_plane(Triangle &t, Plane &p) {
         if(std::isfinite(r) && r > EPSILON && r < (1-EPSILON)){
             if(foundFirst){
                 p2 = temp.base + temp.direction * r;
-                return {p1,p2};
+                return {p1,p2-p1};
             }else{
                 p1 = temp.base + temp.direction * r;
                 foundFirst = true;
@@ -77,6 +67,15 @@ Ray intersect_triangle_plane(Triangle &t, Plane &p) {
     }
 
     return {};
+}
+
+double intersect_ray_plane(Ray &r, Plane &p) {
+    double denom = p.normal * r.direction;
+    if(std::abs(denom) <EPSILON){
+        return 1.0 / 0.0;
+    }
+    double numer = p.normal * (p.base - r.base);
+    return numer / denom;
 }
 
 double intersect_ray_aabb(Ray &r, AABB &aabb) {
@@ -111,5 +110,37 @@ double intersect_ray_aabb(Ray &r, AABB &aabb) {
         return 1.0 / 0.0;
 
     return tmin;
+}
+
+double intersect_ray_kdtree(Ray &r, KdTree *tree) {
+    if(tree->triangles.empty()){
+        double minDist = 10000000000;
+        for(Triangle& tri:tree->triangles){
+            minDist = std::min(minDist, intersect_ray_triangle(r, tri));
+        }
+    }else{
+        KdTree* left  = tree->left;
+        KdTree* right = tree->right;
+
+        // check which one to search first
+        double dLeft  = intersect_ray_aabb(r, left->boundingBox);
+        double dRight = intersect_ray_aabb(r, left->boundingBox);
+
+        // search left node first
+        if(dLeft < dRight){
+            double dist = intersect_ray_kdtree(r, left);
+            if(std::isfinite(dist)){
+                return dist;
+            }
+        }else{
+            double dist = intersect_ray_kdtree(r, right);
+            if(std::isfinite(dist)){
+                return dist;
+            }
+        }
+    }
+    return 1.0 / 0.0;
+
+
 }
 
