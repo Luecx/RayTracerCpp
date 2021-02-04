@@ -34,7 +34,7 @@ Image::~Image() {
     delete pixels;
 }
 
-void Image::setPixel(int &x, int &y, Pixel &p) {
+void Image::setPixel(int &x, int &y, Pixel p) {
     this->pixels[x][y] = p;
 }
 

@@ -56,6 +56,12 @@ int main() {
 
     Image m(500, 500);
 
+    for (int x = 0; x < 500; x++) {
+        for (int y = 0; y < 500; y++) {
+            m.setPixel(x, y, Pixel(x % 255, y % 255, y * x % 255));
+        }
+    }
+
     m.write("HelloThere.ppm");
 
 }

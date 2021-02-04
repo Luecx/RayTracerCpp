@@ -34,7 +34,7 @@ public:
 
     ~Image();
 
-    void setPixel(int &x, int &y, Pixel &p);
+    void setPixel(int &x, int &y, Pixel p);
 
     Pixel getPixel(int &x, int &y);
 
