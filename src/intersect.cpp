@@ -101,12 +101,15 @@ double intersect_ray_aabb(Ray &r, AABB &aabb) {
     tzmax = (bounds[1-sign[2]][2] - r.base[2]) / r.direction[2];
 
     if ((tmin > tzmax) || (tzmin > tmax))
-        return {0,0};
+        return 1.0 / 0.0;
     if (tzmin > tmin)
         tmin = tzmin;
     if (tzmax < tmax)
         tmax = tzmax;
 
-    return ;
+    if (tmin < EPSILON)
+        return 1.0 / 0.0;
+
+    return tmin;
 }
 
