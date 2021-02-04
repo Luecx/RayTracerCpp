@@ -14,6 +14,9 @@ private:
     Vector points[3];
 
 public:
+
+    Triangle();
+
     /**
      * Creates a triangle with points a, b, c
      * @param a The position for a
@@ -38,7 +41,16 @@ public:
      * Copies another Triangle
      * @param other The Triangle which is to be copied.
      */
-    Triangle(Triangle &other);
+    Triangle(const Triangle &other);
+
+    /**
+     * Copies another Triangle
+     * @param other The Triangle which is to be copied.
+     */
+    Triangle(Triangle &&other);
+
+
+    Triangle &operator=(const Triangle &other);
 
     ~Triangle();
 
@@ -94,8 +106,6 @@ public:
     bool operator==(const Triangle &rhs) const;
 
     bool operator!=(const Triangle &rhs) const;
-
-
 
     friend std::ostream &operator<<(std::ostream &os, const Triangle &triangle);
 

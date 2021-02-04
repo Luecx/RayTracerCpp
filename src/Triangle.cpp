@@ -4,6 +4,10 @@
 
 #include "Triangle.h"
 
+
+
+Triangle::Triangle() {}
+
 Triangle::Triangle(const Vector &&a, const Vector &&b, const Vector &&c) {
     this->points[0] = a;
     this->points[1] = b;
@@ -22,7 +26,19 @@ Triangle::Triangle(const Vector *points) {
     this->points[2] = points[2];
 }
 
-Triangle::Triangle(Triangle &other) {
+Triangle::Triangle(const Triangle &other) {
+    this->points[0] = other[0];
+    this->points[1] = other[1];
+    this->points[2] = other[2];
+}
+
+Triangle::Triangle(Triangle &&other) {
+    this->points[0] = other[0];
+    this->points[1] = other[1];
+    this->points[2] = other[2];
+}
+
+Triangle &Triangle::operator=(const Triangle &other){
     this->points[0] = other[0];
     this->points[1] = other[1];
     this->points[2] = other[2];
@@ -75,6 +91,10 @@ std::ostream &operator<<(std::ostream &os, const Triangle &triangle) {
     os << "x: " << triangle.points[0] << ", y: " << triangle.points[1] << ", z: " << triangle.points[2];
     return os;
 }
+
+//Triangle& Triangle::operator=(const Triangle &rhs) {
+//    this
+//}
 
 bool Triangle::operator==(const Triangle &rhs) const {
     return points == rhs.points;
