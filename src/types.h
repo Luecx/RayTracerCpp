@@ -16,7 +16,6 @@ struct Plane {
 struct Ray {
     Vector base{};
     Vector direction{};
-
 };
 
 #endif //RAYTRACER_PLANE_H

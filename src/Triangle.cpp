@@ -48,7 +48,6 @@ Vector Triangle::center() {
 }
 
 const Triangle *Triangle::splitTriangle() {
-    // TODO
     return nullptr;
 }
 
