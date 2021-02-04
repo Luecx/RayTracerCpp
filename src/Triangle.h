@@ -83,11 +83,12 @@ public:
      * @return a at 0, b at 1, and c at 2.
      */
     Vector&   operator[](int index);
-    // /**
-    // * @param index is zero at a, one at b, and so on.
-    // * @return a at 0, b at 1, and c at 2.
-    // */
-    // Vector&   operator[](int index) const;
+
+     /**
+     * @param index is zero at a, one at b, and so on.
+     * @return a at 0, b at 1, and c at 2.
+     */
+    Vector    operator[](int index) const;
 
     const Vector *getPoints() const;
 
@@ -95,7 +96,11 @@ public:
 
     bool operator!=(const Triangle &rhs) const;
 
+
+
     friend std::ostream &operator<<(std::ostream &os, const Triangle &triangle);
+
+
 
 };
 
