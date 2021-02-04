@@ -163,33 +163,33 @@ Vector &Vector::scale(double scalar) {
 ////        v1[i] = _mm256_mul_pd(constant, v1[i]);
 ////    }
 ////    return *this;
-
     for(int i = 0; i < size; i++){
         this->values[i] *= scalar;
     }
     return *this;
 }
 
-Vector &Vector::operator+(const Vector &vec) {
-    Vector *v = new Vector{*this};
-    v->add(vec);
-    return *v;
+Vector Vector::operator+(const Vector &vec) {
+    Vector v{*this};
+    v.add(vec);
+    return v;
 }
 
 Vector &Vector::operator+=(const Vector &vec) {
     return this->add(vec);
 }
 
-Vector &Vector::operator-() {
-    this->negate();
-    return *this;
+Vector Vector::operator-() {
+    Vector v{*this};
+    v.negate();
+    return v;
 }
 
 
-Vector &Vector::operator-(const Vector &vec) {
-    Vector *v = new Vector{*this};
-    v->sub(vec);
-    return *v;
+Vector Vector::operator-(const Vector &vec) {
+    Vector v{*this};
+    v.sub(vec);
+    return v;
 }
 
 Vector &Vector::operator-=(const Vector &vec) {
