@@ -39,12 +39,6 @@ public:
      * @param other The Triangle which is to be copied.
      */
     Triangle(Triangle &other);
-    /**
-     * Merged 2 Triangles
-     * @param a Triangle 1
-     * @param b Triangle 2
-     */
-    Triangle(const Triangle &a, const Triangle &b);
 
     ~Triangle();
 

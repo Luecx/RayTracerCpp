@@ -3,7 +3,6 @@
 //
 
 #include "Triangle.h"
-#include "types.h"
 
 Triangle::Triangle(const Vector &&a, const Vector &&b, const Vector &&c) {
     this->points[0] = a;
@@ -27,10 +26,6 @@ Triangle::Triangle(Triangle &other) {
     this->points[0] = other[0];
     this->points[1] = other[1];
     this->points[2] = other[2];
-}
-
-Triangle::Triangle(const Triangle &a, const Triangle &b) {
-    // TODO
 }
 
 Triangle::~Triangle() {

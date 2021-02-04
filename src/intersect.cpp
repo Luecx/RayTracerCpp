@@ -107,6 +107,6 @@ double intersect_ray_aabb(Ray &r, AABB &aabb) {
     if (tzmax < tmax)
         tmax = tzmax;
 
-    return ;
+    return nullptr;
 }
 
