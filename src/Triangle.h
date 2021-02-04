@@ -12,7 +12,6 @@
 class Triangle {
 private:
     Vector points[3];
-
 public:
 
     Triangle();
@@ -69,7 +68,7 @@ public:
     /**
      * @return The center of the triangle.
      */
-    Vector center();
+    Vector center() const;
 
     /**
      * @return Two triangles that together form the old triangle.
@@ -103,9 +102,18 @@ public:
 
     const Vector *getPoints() const;
 
+
     bool operator==(const Triangle &rhs) const;
 
     bool operator!=(const Triangle &rhs) const;
+
+    bool operator<(const Triangle &rhs) const;
+
+    bool operator>(const Triangle &rhs) const;
+
+    bool operator<=(const Triangle &rhs) const;
+
+    bool operator>=(const Triangle &rhs) const;
 
     friend std::ostream &operator<<(std::ostream &os, const Triangle &triangle);
 

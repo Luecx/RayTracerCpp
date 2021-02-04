@@ -40,11 +40,11 @@ public:
     Vector& negate();
     Vector& scale(double scalar);
 
-    Vector operator+(const Vector& vec);
+    Vector operator+(const Vector& vec) const;
     Vector& operator+=(const Vector& vec);
 
     Vector  operator-();
-    Vector  operator-(const Vector& vec);
+    Vector  operator-(const Vector& vec) const;
     Vector& operator-=(const Vector& vec);
 
     Vector& operator*=(double scalar);

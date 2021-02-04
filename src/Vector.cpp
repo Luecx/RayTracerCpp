@@ -168,7 +168,7 @@ Vector &Vector::scale(double scalar) {
     return *this;
 }
 
-Vector Vector::operator+(const Vector &vec) {
+Vector Vector::operator+(const Vector &vec) const{
     Vector v{*this};
     v.add(vec);
     return v;
@@ -185,7 +185,7 @@ Vector Vector::operator-() {
 }
 
 
-Vector Vector::operator-(const Vector &vec) {
+Vector Vector::operator-(const Vector &vec) const{
     Vector v{*this};
     v.sub(vec);
     return v;

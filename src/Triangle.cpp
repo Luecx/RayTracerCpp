@@ -42,6 +42,7 @@ Triangle &Triangle::operator=(const Triangle &other){
     this->points[0] = other[0];
     this->points[1] = other[1];
     this->points[2] = other[2];
+    return *this;
 }
 
 Triangle::~Triangle() {
@@ -60,7 +61,7 @@ const Vector &Triangle::getC() {
     return points[2];
 }
 
-Vector Triangle::center() {
+Vector Triangle::center() const{
     return (points[0] + points[1] + points[2]) * (1/3.0);
 }
 
@@ -92,10 +93,6 @@ std::ostream &operator<<(std::ostream &os, const Triangle &triangle) {
     return os;
 }
 
-//Triangle& Triangle::operator=(const Triangle &rhs) {
-//    this
-//}
-
 bool Triangle::operator==(const Triangle &rhs) const {
     return points == rhs.points;
 }
@@ -107,3 +104,4 @@ bool Triangle::operator!=(const Triangle &rhs) const {
 const Vector *Triangle::getPoints() const {
     return points;
 }
+
