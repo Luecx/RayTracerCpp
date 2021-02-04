@@ -41,13 +41,7 @@ std::vector<Triangle> readFile(std::string filename) {
                 std::string fb = b.substr(0, b.find('/'));
                 std::string fc = c.substr(0, c.find('/'));
 
-                std::cout << "A: " << fa << std::endl;
-                std::cout << "B: " << fb << std::endl;
-                std::cout << "C: " << fc << std::endl;
-
                 Triangle t(vertices[std::stoi(fa)], vertices[std::stoi(fb)], vertices[std::stoi(fc)]);
-
-                std::cout << t << std::endl;
 
                 triangles.push_back(t);
             }
@@ -56,5 +50,5 @@ std::vector<Triangle> readFile(std::string filename) {
     }
 
 
-    return std::vector<Triangle>();
+    return triangles;
 }

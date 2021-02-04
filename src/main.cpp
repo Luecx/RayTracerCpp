@@ -5,6 +5,7 @@
 #include "types.h"
 #include "intersect.h"
 #include "file_io.h"
+#include <time.h>
 
 int main() {
 
@@ -44,6 +45,15 @@ int main() {
 
 //    std::cout << intersect_ray_aabb(r, aabb);
 
+
+    double time = 0.0;
+
+    double start = clock();
+
     readFile("../Test.obj");
 
+    time += clock() - start;
+
+    time = time / CLOCKS_PER_SEC;
+    std::cout << "Time need for readOBJ " << time << " sec." << std::endl;
 }
