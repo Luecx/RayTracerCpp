@@ -7,7 +7,7 @@
 #include "file_io.h"
 
 void writeFile(std::string &filename, std::vector<Triangle> &triangles) {
-
+    // TODO
 }
 
 std::vector<Triangle> readFile(std::string filename) {
