@@ -4,11 +4,11 @@
 
 #include <iostream>
 #include <iomanip>
-#include "vector.h"
+#include "Vector.h"
 #include "cmath"
 
 
-vector::vector() {
+Vector::Vector() {
     this->size = 3;
     this->internalSize = FILL_TO_4(this->size);
     this->values = static_cast<double *> (_mm_malloc(this->internalSize * sizeof(double), 32));
@@ -16,34 +16,34 @@ vector::vector() {
 }
 
 
-vector::vector(int size) {
+Vector::Vector(int size) {
     this->size = size;
     this->internalSize = FILL_TO_4(this->size);
     this->values = static_cast<double *> (_mm_malloc(this->internalSize * sizeof(double), 32));
     std::memset(this->values, 0, sizeof(double) * this->internalSize);
 }
 
-vector::vector(const vector &vec) {
+Vector::Vector(const Vector &vec) {
     this->size = vec.size;
     this->internalSize = FILL_TO_4(this->size);
     this->values = static_cast<double *> (_mm_malloc(this->internalSize * sizeof(double), 32));
     std::memcpy(this->values, vec.values,this->internalSize * sizeof(double));
 }
 
-vector::vector(vector &&vec) noexcept {
+Vector::Vector(Vector &&vec) noexcept {
     this->size = vec.size;
     this->values = vec.values;
     vec.values = nullptr;
 }
 
-vector::~vector() {
+Vector::~Vector() {
     if (this->values != nullptr) {
         _mm_free(this->values);
         this->values = nullptr;
     }
 }
 
-vector &vector::operator=(const vector &vec) {
+Vector &Vector::operator=(const Vector &vec) {
     if (this->size != vec.size) {
         this->size = vec.size;
         this->internalSize = vec.internalSize;
@@ -54,7 +54,7 @@ vector &vector::operator=(const vector &vec) {
     return *this;
 }
 
-vector &vector::operator=(vector &&vec) noexcept {
+Vector &Vector::operator=(Vector &&vec) noexcept {
 
     delete[] this->values;
     this->size = vec.size;
@@ -64,19 +64,19 @@ vector &vector::operator=(vector &&vec) noexcept {
     return *this;
 }
 
-int vector::entryCount(){
+int Vector::entryCount(){
     return size;
 }
 
-double &vector::get(int index) {
+double &Vector::get(int index) {
     return values[index];
 }
 
-double vector::get(int index) const {
+double Vector::get(int index) const {
     return values[index];
 }
 
-vector &vector::add(const vector &other) {
+Vector &Vector::add(const Vector &other) {
 //    __m256d *v1 = (__m256d *) this->values;
 //    __m256d *v2 = (__m256d *) other.values;
 //    for (int i = 0; i < internalSize / 4; i++) {
@@ -90,7 +90,7 @@ vector &vector::add(const vector &other) {
     return *this;
 }
 
-vector &vector::sub(const vector &other) {
+Vector &Vector::sub(const Vector &other) {
 //    __m256d *v1 = (__m256d *) this->values;
 //    __m256d *v2 = (__m256d *) other.values;
 //    for (int i = 0; i < internalSize / 4; i++) {
@@ -104,7 +104,7 @@ vector &vector::sub(const vector &other) {
     return *this;
 }
 
-double vector::dot(const vector &other) {
+double Vector::dot(const Vector &other) {
 
     double res = 0;
     for(int i = 0; i < size; i++){
@@ -131,15 +131,15 @@ double vector::dot(const vector &other) {
 }
 
 
-double vector::mag_squared() {
+double Vector::mag_squared() {
     return dot(*this);
 }
 
-double vector::mag() {
+double Vector::mag() {
     return sqrt(mag_squared());
 }
 
-vector &vector::negate() {
+Vector &Vector::negate() {
     for(int i = 0; i < size; i++){
         this->values[i] = -this->values[i];
     }
@@ -150,7 +150,7 @@ vector &vector::negate() {
     return *this;
 }
 
-vector &vector::scale(double scalar) {
+Vector &Vector::scale(double scalar) {
 //    __m256d *v1 = (__m256d *) this->values;
 //    __m256d constant = _mm256_set1_pd(scalar);
 //    for (int i = 0; i < internalSize / 4; i++) {
@@ -170,60 +170,60 @@ vector &vector::scale(double scalar) {
     return *this;
 }
 
-vector &vector::operator+(const vector &vec) {
-    vector *v = new vector{*this};
+Vector &Vector::operator+(const Vector &vec) {
+    Vector *v = new Vector{*this};
     v->add(vec);
     return *v;
 }
 
-vector &vector::operator+=(const vector &vec) {
+Vector &Vector::operator+=(const Vector &vec) {
     return this->add(vec);
 }
 
-vector &vector::operator-() {
+Vector &Vector::operator-() {
     this->negate();
     return *this;
 }
 
 
-vector &vector::operator-(const vector &vec) {
-    vector *v = new vector{*this};
+Vector &Vector::operator-(const Vector &vec) {
+    Vector *v = new Vector{*this};
     v->sub(vec);
     return *v;
 }
 
-vector &vector::operator-=(const vector &vec) {
+Vector &Vector::operator-=(const Vector &vec) {
     return this->sub(vec);
 }
 
-vector &vector::operator*=(const double scalar) {
+Vector &Vector::operator*=(const double scalar) {
     return this->scale(scalar);
 }
 
-double vector::operator*(const vector &other) {
+double Vector::operator*(const Vector &other) {
     return dot(other);
 }
 
-double &vector::operator()(int index) {
+double &Vector::operator()(int index) {
     return this->get(index);
 }
 
-double vector::operator()(int index) const {
+double Vector::operator()(int index) const {
 
     return this->get(index);
 };
 
-double &vector::operator[](int index) {
+double &Vector::operator[](int index) {
 
     return this->get(index);
 };
 
-double vector::operator[](int index) const {
+double Vector::operator[](int index) const {
 
     return this->get(index);
 };
 
-std::ostream &operator<<(std::ostream &os, const vector &vector) {
+std::ostream &operator<<(std::ostream &os, const Vector &vector) {
     os << "[";
 
     for (int i = 0; i < vector.size; i++) {

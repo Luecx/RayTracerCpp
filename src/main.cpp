@@ -1,18 +1,18 @@
 #include <iostream>
 #include <chrono>
 #include <iomanip>
-#include "vector.h"
+#include "Vector.h"
 
 int main() {
 
-    vector v1{26};
-    vector v2{26};
+    Vector v1{26};
+    Vector v2{26};
 
     v1[2] = 3;
     v1[1] = 3;
     v2[1] = 43;
 
-    vector v3 = v2 + v1;
+    Vector v3 = v2 + v1;
     std::cout << v1 << std::endl;
     std::cout << v2 << std::endl;
     std::cout << v3 << std::endl;
