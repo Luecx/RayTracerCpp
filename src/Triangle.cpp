@@ -5,7 +5,6 @@
 #include "Triangle.h"
 
 
-
 Triangle::Triangle() {}
 
 Triangle::Triangle(const Vector &&a, const Vector &&b, const Vector &&c) {

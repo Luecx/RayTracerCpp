@@ -5,6 +5,7 @@
 #include "types.h"
 #include "intersect.h"
 #include "file_io.h"
+#include "Image.h"
 #include <time.h>
 
 int main() {
@@ -52,4 +53,9 @@ int main() {
 
     KdNode kdNode{aabb, triangles, 1};
     std::cout << "Time need for readOBJ " << (clock() - start) << "ms." << std::endl;
+
+    Image m(500, 500);
+
+    m.write("HelloThere.ppm");
+
 }

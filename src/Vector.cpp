@@ -15,7 +15,6 @@ Vector::Vector() {
     std::memset(this->values, 0, sizeof(double) * this->internalSize);
 }
 
-
 Vector::Vector(int size) {
     this->size = size;
     this->internalSize = FILL_TO_4(this->size);

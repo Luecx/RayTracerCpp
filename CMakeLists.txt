@@ -10,7 +10,7 @@ add_executable(RayTracer
         src/Triangle.cpp src/Triangle.h
         src/types.h
         src/intersect.cpp src/intersect.h
-        src/file_io.h src/file_io.cpp)
+        src/file_io.h src/file_io.cpp src/Image.cpp src/Image.h)
 
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")

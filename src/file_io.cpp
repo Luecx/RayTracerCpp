@@ -27,9 +27,11 @@ std::vector<Triangle> readFile(std::string filename) {
 
             int tempI = text.find(' ');
             std::string a = text.substr(0, tempI);
+
             text.erase(0, tempI + 1);
             tempI = text.find(' ');
             std::string b = text.substr(0, tempI);
+
             text.erase(0, tempI + 1);
             tempI = text.find(' ');
             std::string c = text.substr(0, tempI);
