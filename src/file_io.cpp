@@ -41,7 +41,7 @@ std::vector<Triangle> readFile(std::string filename) {
                 std::string fb = b.substr(0, b.find('/'));
                 std::string fc = c.substr(0, c.find('/'));
 
-                Triangle t(vertices[std::stoi(fa)], vertices[std::stoi(fb)], vertices[std::stoi(fc)]);
+                Triangle t(vertices[std::stoi(fa) + 1], vertices[std::stoi(fb) + 1], vertices[std::stoi(fc) + 1]);
 
                 triangles.push_back(t);
             }
