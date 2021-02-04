@@ -8,6 +8,7 @@
 
 #include <ostream>
 #include "Vector.h"
+#include "Ray.h"
 
 class Triangle {
 private:
@@ -61,6 +62,8 @@ public:
      * @return Two triangles that together form the old triangle.
      */
     const Triangle* splitTriangle();
+
+    double intersect(Ray &ray);
 
     /**
      * Scales the triangle by scale.
