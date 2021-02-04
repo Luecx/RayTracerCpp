@@ -5,10 +5,9 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(RayTracer
         src/main.cpp
-        src/Vector.h
-        src/Vector.cpp
-        src/Config.h
-        src/Config.cpp)
+        src/Vector.cpp src/Vector.h
+        src/Config.cpp src/Config.h
+        src/Triangle.cpp src/Triangle.h)
 
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
