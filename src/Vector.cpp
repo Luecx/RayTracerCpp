@@ -23,6 +23,15 @@ Vector::Vector(int size) {
     std::memset(this->values, 0, sizeof(double) * this->internalSize);
 }
 
+Vector::Vector(double x, double y, double z) {
+    this->size = 3;
+    this->internalSize = FILL_TO_4(this->size);
+    this->values = static_cast<double *> (_mm_malloc(this->internalSize * sizeof(double), 32));
+    this->values[0] = x;
+    this->values[1] = y;
+    this->values[2] = z;
+}
+
 Vector::Vector(const Vector &vec) {
     this->size = vec.size;
     this->internalSize = FILL_TO_4(this->size);
@@ -51,16 +60,6 @@ Vector &Vector::operator=(const Vector &vec) {
         this->values = static_cast<double *> (_mm_malloc(this->internalSize * sizeof(double), 32));
     }
     std::memcpy(this->values, vec.values, this->size * sizeof(double));
-    return *this;
-}
-
-Vector &Vector::operator=(Vector &&vec) noexcept {
-
-    delete[] this->values;
-    this->size = vec.size;
-    this->values = vec.values;
-    vec.values = nullptr;
-
     return *this;
 }
 

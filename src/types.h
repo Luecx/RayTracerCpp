@@ -6,16 +6,16 @@
 #define RAYTRACER_PLANE_H
 
 
-struct Plane {
-    Vector base;
-    Vector normal;
+#include "Vector.h"
 
+struct Plane {
+    Vector base{};
+    Vector normal{};
 };
 
-
 struct Ray {
-    Vector base;
-    Vector direction;
+    Vector base{};
+    Vector direction{};
 
 };
 
