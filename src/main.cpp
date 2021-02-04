@@ -51,5 +51,5 @@ int main() {
     std::vector<Triangle> triangles = readFile("../res/cube.obj");
 
     KdNode kdNode{aabb, triangles, 1};
-    std::cout << "Time need for readOBJ " << ((clock() - start) / CLOCKS_PER_SEC) << " sec." << std::endl;
+    std::cout << "Time need for readOBJ " << (clock() - start) << "ms." << std::endl;
 }
