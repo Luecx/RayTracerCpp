@@ -46,14 +46,9 @@ int main() {
 //    std::cout << intersect_ray_aabb(r, aabb);
 
 
-    double time = 0.0;
-
     double start = clock();
 
-    readFile("../Test.obj");
+    auto donat = readFile("../Test.obj");
 
-    time += clock() - start;
-
-    time = time / CLOCKS_PER_SEC;
-    std::cout << "Time need for readOBJ " << time << " sec." << std::endl;
+    std::cout << "Time need for readOBJ " << ((clock() - start) / CLOCKS_PER_SEC) << " sec." << std::endl;
 }
