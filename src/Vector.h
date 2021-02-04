@@ -32,6 +32,7 @@ public:
     double& get(int index);
     double  get(int index) const;
 
+    Vector  cross(const Vector& other);
     Vector& add(const Vector& other);
     Vector& sub(const Vector& other);
     double  dot(const Vector& other);

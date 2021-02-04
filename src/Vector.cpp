@@ -74,6 +74,13 @@ double Vector::get(int index) const {
     return values[index];
 }
 
+Vector Vector::cross(const Vector& other){
+    return {get(1) * other(2) - get(2) * other(1),
+            get(2) * other(0) - get(0) * other(2),
+            get(0) * other(1) - get(1) * other(0)};
+}
+
+
 Vector &Vector::add(const Vector &other) {
 //    __m256d *v1 = (__m256d *) this->values;
 //    __m256d *v2 = (__m256d *) other.values;

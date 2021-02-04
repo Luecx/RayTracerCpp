@@ -112,15 +112,16 @@ double intersect_ray_aabb(Ray &r, AABB &aabb) {
     return tmin;
 }
 
-double intersect_ray_kdtree(Ray &r, KdTree *tree) {
-    if(tree->triangles.empty()){
-        double minDist = 10000000000;
-        for(Triangle& tri:tree->triangles){
+double intersect_ray_kdtree(Ray &r, KdTree &tree) {
+    if(!tree.triangles.empty()){
+        double minDist =  1.0 / 0.0;
+        for(Triangle& tri:tree.triangles){
             minDist = std::min(minDist, intersect_ray_triangle(r, tri));
         }
+        return minDist;
     }else{
-        KdTree* left  = tree->left;
-        KdTree* right = tree->right;
+        KdTree* left  = tree.left;
+        KdTree* right = tree.right;
 
         // check which one to search first
         double dLeft  = intersect_ray_aabb(r, left->boundingBox);
@@ -128,19 +129,45 @@ double intersect_ray_kdtree(Ray &r, KdTree *tree) {
 
         // search left node first
         if(dLeft < dRight){
-            double dist = intersect_ray_kdtree(r, left);
+            double dist = intersect_ray_kdtree(r, *left);
             if(std::isfinite(dist)){
                 return dist;
             }
         }else{
-            double dist = intersect_ray_kdtree(r, right);
+            double dist = intersect_ray_kdtree(r, *right);
             if(std::isfinite(dist)){
                 return dist;
             }
         }
     }
     return 1.0 / 0.0;
+}
 
+double intersect_ray_triangle(Ray &r, Triangle &t) {
 
+    double a,f,u,v;
+    Vector edge1 = t[1] - t[0];
+    Vector edge2 = t[2] - t[0];
+    Vector h = r.direction.cross(edge2);
+    a = edge1 * h;
+    if (a > -EPSILON && a < EPSILON)
+        return 1.0 / 0.0;    // This ray is parallel to this triangle.
+    f = 1.0/a;
+    Vector s = r.base - t[0];
+    u = s * h * f;
+    if (u < 0.0 || u > 1.0)
+        return 1.0 / 0.0;
+    Vector q = s.cross(edge1);
+    v = r.direction * q * f;
+    if (v < 0.0 || u + v > 1.0)
+        return 1.0 / 0.0;
+    // At this stage we can compute t to find out where the intersection point is on the line.
+    double dist = edge2 * q * f;
+    if (dist > EPSILON) // ray intersection
+    {
+        return dist;
+    }
+    else // This means that there is a line intersection but not a ray intersection.
+        return 1.0 / 0.0;
 }
 
