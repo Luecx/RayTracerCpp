@@ -6,12 +6,17 @@
 #define RAYTRACER_PLANE_H
 
 
-class Plane {
-//    Vector base;
-//    Vector normal;
-
+struct Plane {
+    Vector base;
+    Vector normal;
 
 };
 
+
+struct Ray {
+    Vector base;
+    Vector direction;
+
+};
 
 #endif //RAYTRACER_PLANE_H
