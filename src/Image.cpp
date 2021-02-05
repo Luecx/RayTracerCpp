@@ -2,9 +2,8 @@
 // Created by QuantumRange on 04-Feb-21.
 //
 
-#include <stdio.h>
-#include <fstream>
 #include "Image.h"
+#include <iostream>
 
 Image::Image(const int &width, const int &height) {
     this->pixels = new Pixel *[width];
@@ -93,11 +92,9 @@ bool Image::operator!=(const Image &rhs) const {
     return !(rhs == *this);
 }
 
-Pixel::Pixel(int r, int g, int b, int a) : r(r), g(g), b(b), a(a) {}
+Pixel::Pixel(int r, int g, int b) : r(r), g(g), b(b) {}
 
-Pixel::Pixel(int r, int g, int b) : r(r), g(g), b(b), a(255) {}
-
-Pixel::Pixel() : r(0), g(0), b(0), a(255) {}
+Pixel::Pixel() : r(0), g(0), b(0) {}
 
 Image loadImage(std::string &filename) {
     // TODO
@@ -106,17 +103,22 @@ Image loadImage(std::string &filename) {
 }
 
 void Image::write(std::string filename) {
-    std::ofstream outfile(filename);
+    std::ofstream bmpFile(filename, std::ios::binary);
 
-    outfile << "P3" << std::endl << width << " " << height << std::endl;
+    BmpHeader header;
+    BmpInfoHeader infoHeader;
 
-    outfile << "255" << std::endl;
+    infoHeader.width = width;
+    infoHeader.height = height;
 
-    for (int y = 0; y < height; y++) {
-        for (int x = 0; x < width; x++) {
-            outfile << pixels[x][y].r << " " << pixels[x][y].g << " " << pixels[x][y].b << std::endl;
+    bmpFile.write((char *) &header, 14);
+    bmpFile.write((char *) &infoHeader, 40);
+
+    for (int x = 0; x < width; x++) {
+        for (int y = 0; y < height; y++) {
+            bmpFile.write((char *) &pixels[x][y], 3);
         }
     }
 
-    outfile.close();
+    bmpFile.close();
 }

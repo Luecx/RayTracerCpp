@@ -23,27 +23,28 @@ int main() {
 
 
 
-    Image m(100,100);
+    Image m(100, 100);
 
-    for(int i = 0; i < 100; i++){
-        for(int j = 0; j < 100; j++){
-            Ray r {{-0.1 + i / 400.0, 0.25 - j / 400.0, 1},{0,0,-1}};
-            double d = intersect_ray_kdtree(r, kdNode);
-
-
+//    for(int i = 0; i < 100; i++){
+//        for(int j = 0; j < 100; j++){
+//            Ray r {{-0.1 + i / 400.0, 0.25 - j / 400.0, 1},{0,0,-1}};
+//            double d = intersect_ray_kdtree(r, kdNode);
+//
+//
 //            double d = intersect_ray_triangle(r, t);
-////            for(Triangle& t:triangles){
-////                d = std::min(d,intersect_ray_triangle(r, triangles[2]) );
-////            }
+//            for(Triangle& t:triangles){
+//                d = std::min(d,intersect_ray_triangle(r, triangles[2]) );
+//            }
+//
+//            if(std::isfinite(d)){
+//                std::cout << i << " " << j << std::endl;
+//                Pixel p{(int)(255 * std::min(d,1.0)),(int)(255 * std::min(d,1.0)),(int)(255  * std::min(d,1.0))};
+//                m.setPixel(i,j,p);
+//            }
+//        }
+//    }
 
-            if(std::isfinite(d)){
-                std::cout << i << " " << j << std::endl;
-                Pixel p{(int)(255 * std::min(d,1.0)),(int)(255 * std::min(d,1.0)),(int)(255  * std::min(d,1.0))};
-                m.setPixel(i,j,p);
-            }
-        }
-    }
-    m.write("HelloThere.ppm");
+    m.write("HelloThere.bmp");
 
 //    std::cout << "Time need for readOBJ " << ((clock() - start) / CLOCKS_PER_SEC) << " sec." << std::endl;
 
