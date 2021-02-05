@@ -103,6 +103,7 @@ Image loadImage(std::string &filename) {
 }
 
 void Image::write(std::string filename) {
+    // https://en.wikipedia.org/wiki/BMP_file_format
     std::ofstream bmpFile(filename, std::ios::binary);
 
     BmpHeader header;
