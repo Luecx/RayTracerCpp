@@ -42,18 +42,18 @@ void KdTree::create(AABB aabb, std::vector<Triangle> p_triangles, int depth, int
             // determine the cut position by taking the average of the closest triangles to the cut
             cutPosition = (split_lo[split_lo.size()-1].center() + split_hi[0].center())[longestAxis] * 0.5;
         }
-
         // determine the cut plane
-        Plane cutPlane{{cutPosition, 0,0},{0,0,0}};
+        Plane cutPlane{{0,0,0},{0,0,0}};
         cutPlane.normal[longestAxis] = 1;
+        cutPlane.base  [longestAxis] = cutPosition;
 
         int trianglesLeft  = split_lo.size();
         int trianglesRight = split_hi.size();
         for(int i = 0; i < trianglesLeft; i++){
-            split_lo[i].splitTriangle(cutPlane, split_lo, split_hi);
+            split_lo[i].splitTriangle(cutPlane, split_lo, split_hi, -1);
         }
         for(int i = 0; i < trianglesRight; i++){
-            split_hi[i].splitTriangle(cutPlane, split_hi, split_lo);
+            split_hi[i].splitTriangle(cutPlane, split_lo, split_hi, +1);
         }
 
         AABB aabbLeft  = {aabb.min, aabb.max};
@@ -62,7 +62,7 @@ void KdTree::create(AABB aabb, std::vector<Triangle> p_triangles, int depth, int
         aabbLeft .max[longestAxis] = cutPosition;
         aabbRight.min[longestAxis] = cutPosition;
 
-        left  = new KdTree(aabbLeft, split_lo, depth-1, minElements);
+        left  = new KdTree(aabbLeft,  split_lo, depth-1, minElements);
         right = new KdTree(aabbRight, split_hi, depth-1, minElements);
     }
 }

@@ -11,40 +11,40 @@
 
 int main() {
 
-    std::vector<Triangle> triangles = readFile("../res/bunny.obj");
-    std::cout << "creating kd tree" << std::endl;
-    KdTree kdNode{triangles, 4, 0};
-    std::cout << "creating kd tree finished" << std::endl;
-
-//    Triangle t {{-1,-1,0},{1,1,0},{1,-1,0}};
-//    Ray r{{0.5,-0.5,10},{0,0,-1}};
+//    std::vector<Triangle> triangles = readFile("../res/bunny.obj");
+//    std::cout << "creating kd tree" << std::endl;
+//    KdTree kdNode{triangles, 10, 2};
+//    std::cout << "creating kd tree finished" << std::endl;
 
 
-
-
-
-    Image m(100, 100);
-
-//    for(int i = 0; i < 100; i++){
-//        for(int j = 0; j < 100; j++){
-//            Ray r {{-0.1 + i / 400.0, 0.25 - j / 400.0, 1},{0,0,-1}};
+//    Image m(1000,1000);
+////#pragma omp parallel for schedule(static) num_threads(24)
+//    auto start = clock();
+//    for(int i = 0; i < 1000; i++){
+//        std::cout <<"\rprogress: "<<  (i+1) * 100.0 / 1000.0 << " %" << "time: " << clock() - start / 1000.0 << "s" << std::flush;
+//            for(int j = 0; j < 1000; j++){
+//            Ray r {{-0.1 + i / 5000.0, 0.2 - j / 5000.0, 0.4},{0,0,-1}};
 //            double d = intersect_ray_kdtree(r, kdNode);
-//
-//
-//            double d = intersect_ray_triangle(r, t);
-//            for(Triangle& t:triangles){
-//                d = std::min(d,intersect_ray_triangle(r, triangles[2]) );
-//            }
-//
-//            if(std::isfinite(d)){
-//                std::cout << i << " " << j << std::endl;
-//                Pixel p{(int)(255 * std::min(d,1.0)),(int)(255 * std::min(d,1.0)),(int)(255  * std::min(d,1.0))};
+//            if(d < INFTY){
+//                Pixel p{(int)(255 * std::min(d/5,1.0)),(int)(255 * std::min(d/5,1.0)),(int)(255  * std::min(d/5,1.0))};
 //                m.setPixel(i,j,p);
 //            }
 //        }
 //    }
+//    m.write("HelloThere1.ppm");
 
-    m.write("HelloThere.bmp");
+    auto start = clock();
+    AABB aabb{{-1,-1,-1}, {1,1,1}};
+    Triangle t {{-0.1 + 0 / 5000.0, 0.2 - 0 / 5000.0, 0.4},{0,0,-1}, {3,2,1}};
+    Ray r {{-0.1 + 10 / 5000.0, 3 - 0 / 5000.0, 0.4},{0,0,-1}};
+
+
+    double a = 0;
+    for(int i = 0; i < 10000000; i++){
+        a += intersect_ray_triangle(r, t);
+    }
+    std::cout << a << std::endl;
+    std::cout << clock() - start << std::endl;
 
 //    std::cout << "Time need for readOBJ " << ((clock() - start) / CLOCKS_PER_SEC) << " sec." << std::endl;
 

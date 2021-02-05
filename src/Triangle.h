@@ -67,18 +67,24 @@ public:
      * @return c
      */
     const Vector& getC();
+
     /**
      * @return The center of the triangle.
      */
     Vector center() const;
 
     /**
-     * Splits the triangle into 2 or 3 triangles if intersected by the given plane
-     * and A) adjusts its own vertices to be one of the triangles and adds the remaining
-     * triangles into the given vector. We assume that the center of the triangle is currently on the lhs
-     * and triangles split away from the triangle will be places in rhs
+     * splits a triangle at a given plane.
+     * it requires two vectors of triangles.
+     * one is supposed to contain the triangles which are on the negative side of the split plane and
+     * the other one will contain those which are on the positive side.
+     * furthermore it requires the side which the triangle is on. this is relevant if the center is directly on the cut.
+     * It is either +1 if its on the positive side or -1 if its on the negative side
+     * @param p
+     * @param lhs
+     * @param rhs
      */
-    void splitTriangle(Plane &p,  std::vector<Triangle> &lhs, std::vector<Triangle> &rhs);
+    void splitTriangle(Plane &p,  std::vector<Triangle> &lhs, std::vector<Triangle> &rhs, double originalSide);
 
     /**
      * Scales the triangle by scale.
@@ -97,13 +103,17 @@ public:
      * @param index is zero at a, one at b, and so on.
      * @return a at 0, b at 1, and c at 2.
      */
-    Vector&   operator[](int index);
+    inline Vector&   operator[](int index){
+        return points[index];
+    }
 
      /**
      * @param index is zero at a, one at b, and so on.
      * @return a at 0, b at 1, and c at 2.
      */
-    Vector    operator[](int index) const;
+     inline Vector    operator[](int index) const{
+         return points[index];
+    }
 
     const Vector *getPoints() const;
 

@@ -55,7 +55,7 @@ Ray intersect_triangle_plane(Triangle &t, Plane &p) {
     for(int i = 0; i < 3; i++){
         Ray temp{t[i], t[(i+1)%3] - t[i]};
         double r = intersect_ray_plane(temp, p);
-        if(std::isfinite(r) && r > EPSILON && r < (1-EPSILON)){
+        if(abs(r) < INFTY && r > EPSILON && r < (1 - EPSILON)){
             if(foundFirst){
                 p2 = temp.base + temp.direction * r;
                 return {p1,p2-p1};
@@ -72,49 +72,42 @@ Ray intersect_triangle_plane(Triangle &t, Plane &p) {
 double intersect_ray_plane(Ray &r, Plane &p) {
     double denom = p.normal * r.direction;
     if(std::abs(denom) <EPSILON){
-        return 1.0 / 0.0;
+        return INFTY;
     }
     double numer = p.normal * (p.base - r.base);
     return numer / denom;
 }
 
 double intersect_ray_aabb(Ray &r, AABB &aabb) {
-    double tmin, tmax, tymin, tymax, tzmin, tzmax;
 
-    Vector bounds[]{aabb.min, aabb.max};
-    bool   sign  []{1.0/r.direction[0] < 0, 1.0/r.direction[1] < 0, 1.0/r.direction[2] < 0};
+    double t1 = (aabb.min[0] - r.base[0]) / r.direction[0];
+    double t2 = (aabb.max[0] - r.base[0]) / r.direction[0];
+    double t3 = (aabb.min[1] - r.base[1]) / r.direction[1];
+    double t4 = (aabb.max[1] - r.base[1]) / r.direction[1];
+    double t5 = (aabb.min[2] - r.base[2]) / r.direction[2];
+    double t6 = (aabb.max[2] - r.base[2]) / r.direction[2];
 
-    tmin =  (bounds[  sign[0]][0] - r.base[0])      / r.direction[0];
-    tmax =  (bounds[1-sign[0]][0] - r.base[0])      / r.direction[0];
-    tymin = (bounds[  sign[1]][1] - r.base[1])      / r.direction[1];
-    tymax = (bounds[1-sign[1]][1] - r.base[1])      / r.direction[1];
+    double tmin = std::max(std::max(std::min(t1, t2), std::min(t3, t4)), std::min(t5, t6));
+    double tmax = std::min(std::min(std::max(t1, t2), std::max(t3, t4)), std::max(t5, t6));
 
-    if ((tmin > tymax) || (tymin > tmax))
-        return false;
-    if (tymin > tmin)
-        tmin = tymin;
-    if (tymax < tmax)
-        tmax = tymax;
+// if tmax < 0, ray (line) is intersecting AABB, but the whole AABB is behind us
+    if (tmax < 0)
+    {
+        return INFTY;
+    }
 
-    tzmin = (bounds[  sign[2]][2] - r.base[2]) / r.direction[2];
-    tzmax = (bounds[1-sign[2]][2] - r.base[2]) / r.direction[2];
-
-    if ((tmin > tzmax) || (tzmin > tmax))
-        return 1.0 / 0.0;
-    if (tzmin > tmin)
-        tmin = tzmin;
-    if (tzmax < tmax)
-        tmax = tzmax;
-
-    if (tmin < EPSILON)
-        return 1.0 / 0.0;
+// if tmin > tmax, ray doesn't intersect AABB
+    if (tmin > tmax)
+    {
+        return INFTY;
+    }
 
     return tmin;
 }
 
 double intersect_ray_kdtree(Ray &r, KdTree &tree) {
-    if(!tree.triangles.empty()){
-        double minDist =  1.0 / 0.0;
+    if(!tree.triangles.empty() || tree.left == nullptr || tree.right == nullptr){
+        double minDist =  INFTY;
         for(Triangle& tri:tree.triangles){
             minDist = std::min(minDist, intersect_ray_triangle(r, tri));
         }
@@ -124,23 +117,28 @@ double intersect_ray_kdtree(Ray &r, KdTree &tree) {
         KdTree* right = tree.right;
 
         // check which one to search first
-        double dLeft  = intersect_ray_aabb(r, left->boundingBox);
-        double dRight = intersect_ray_aabb(r, left->boundingBox);
+        double dLeft  = intersect_ray_aabb(r, left ->boundingBox);
+        double dRight = intersect_ray_aabb(r, right->boundingBox);
 
+
+        if(dLeft == INFTY && dRight == INFTY) return INFTY;
         // search left node first
         if(dLeft < dRight){
             double dist = intersect_ray_kdtree(r, *left);
-            if(std::isfinite(dist)){
+            if(std::abs(dist) < INFTY){
                 return dist;
+            }else{
+                return intersect_ray_kdtree(r, *right);
             }
         }else{
             double dist = intersect_ray_kdtree(r, *right);
-            if(std::isfinite(dist)){
+            if(std::abs(dist) < INFTY){
                 return dist;
+            }else{
+                return intersect_ray_kdtree(r, *left);
             }
         }
     }
-    return 1.0 / 0.0;
 }
 
 double intersect_ray_triangle(Ray &r, Triangle &t) {
@@ -148,19 +146,19 @@ double intersect_ray_triangle(Ray &r, Triangle &t) {
     double a,f,u,v;
     Vector edge1 = t[1] - t[0];
     Vector edge2 = t[2] - t[0];
-    Vector h = r.direction.cross(edge2);
+    Vector h{r.direction.cross(edge2)};
     a = edge1 * h;
     if (a > -EPSILON && a < EPSILON)
-        return 1.0 / 0.0;    // This ray is parallel to this triangle.
+        return INFTY;    // This ray is parallel to this triangle.
     f = 1.0/a;
     Vector s = r.base - t[0];
     u = s * h * f;
     if (u < 0.0 || u > 1.0)
-        return 1.0 / 0.0;
+        return INFTY;
     Vector q = s.cross(edge1);
     v = r.direction * q * f;
     if (v < 0.0 || u + v > 1.0)
-        return 1.0 / 0.0;
+        return INFTY;
     // At this stage we can compute t to find out where the intersection point is on the line.
     double dist = edge2 * q * f;
     if (dist > EPSILON) // ray intersection
@@ -168,6 +166,6 @@ double intersect_ray_triangle(Ray &r, Triangle &t) {
         return dist;
     }
     else // This means that there is a line intersection but not a ray intersection.
-        return 1.0 / 0.0;
+        return INFTY;
 }
 

@@ -82,13 +82,6 @@ Vector Vector::cross(const Vector& other){
 
 
 Vector &Vector::add(const Vector &other) {
-//    __m256d *v1 = (__m256d *) this->values;
-//    __m256d *v2 = (__m256d *) other.values;
-//    for (int i = 0; i < internalSize / 4; i++) {
-//        v1[i] = _mm256_add_pd(v1[i], v2[i]);
-//    }
-//    return *this;
-
     for(int i = 0; i < size; i++){
         this->values[i] += other.get(i);
     }
@@ -96,13 +89,6 @@ Vector &Vector::add(const Vector &other) {
 }
 
 Vector &Vector::sub(const Vector &other) {
-//    __m256d *v1 = (__m256d *) this->values;
-//    __m256d *v2 = (__m256d *) other.values;
-//    for (int i = 0; i < internalSize / 4; i++) {
-//        v1[i] = _mm256_sub_pd(v1[i], v2[i]);
-//    }
-//    *v1 = _mm256_sub_pd(*v1, *v2);
-//    return *this;
     for(int i = 0; i < size; i++){
         this->values[i] -= other.get(i);
     }
@@ -116,23 +102,6 @@ double Vector::dot(const Vector &other) {
         res += this->values[i] * other.values[i];
     }
     return res;
-
-//    double res = 0;
-//    __m256d *v1 = (__m256d *) this->values;
-//    __m256d *v2 = (__m256d *) other.values;
-//    for (int i = 0; i < internalSize / 4; i++) {
-//        __m256d xy = _mm256_mul_pd(v1[i], v2[i]);
-//
-//        __m128d xylow = _mm256_castpd256_pd128(xy);
-//        __m128d xyhigh = _mm256_extractf128_pd(xy, 1);
-//        __m128d sum1 = _mm_add_pd(xylow, xyhigh);
-//
-//        __m128d swapped = _mm_shuffle_pd(sum1, sum1, 0b01);
-//        __m128d dotproduct = _mm_add_pd(sum1, swapped);
-//        res += dotproduct[0];
-//    }
-//    return res;
-
 }
 
 
@@ -148,26 +117,10 @@ Vector &Vector::negate() {
     for(int i = 0; i < size; i++){
         this->values[i] = -this->values[i];
     }
-//    __m256d *v1 = (__m256d *) this->values;
-//    for (int i = 0; i < internalSize / 4; i++) {
-//        v1[i] = _mm256_sub_pd(_mm256_set1_pd(0.0), v1[i]);
-//    }
     return *this;
 }
 
 Vector &Vector::scale(double scalar) {
-//    __m256d *v1 = (__m256d *) this->values;
-//    __m256d constant = _mm256_set1_pd(scalar);
-//    for (int i = 0; i < internalSize / 4; i++) {
-//        v1[i] = _mm256_mul_pd(constant, v1[i]);
-//    }
-//    return *this;
-//
-//    _mm256_store_pd(values, _mm256_mul_pd( _mm256_set1_pd(scalar),_mm256_load_pd(values)));
-////    for (int i = 0; i < internalSize / 4; i++) {
-////        v1[i] = _mm256_mul_pd(constant, v1[i]);
-////    }
-////    return *this;
     for(int i = 0; i < size; i++){
         this->values[i] *= scalar;
     }
