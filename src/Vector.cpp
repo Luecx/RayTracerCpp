@@ -9,61 +9,30 @@
 
 
 Vector::Vector() {
-    this->size = 3;
-    this->internalSize = FILL_TO_4(this->size);
-    this->values = static_cast<double *> (_mm_malloc(this->internalSize * sizeof(double), 32));
-    std::memset(this->values, 0, sizeof(double) * this->internalSize);
 }
 
-Vector::Vector(int size) {
-    this->size = size;
-    this->internalSize = FILL_TO_4(this->size);
-    this->values = static_cast<double *> (_mm_malloc(this->internalSize * sizeof(double), 32));
-    std::memset(this->values, 0, sizeof(double) * this->internalSize);
-}
 
 Vector::Vector(double x, double y, double z) {
-    this->size = 3;
-    this->internalSize = FILL_TO_4(this->size);
-    this->values = static_cast<double *> (_mm_malloc(this->internalSize * sizeof(double), 32));
     this->values[0] = x;
     this->values[1] = y;
     this->values[2] = z;
 }
 
 Vector::Vector(const Vector &vec) {
-    this->size = vec.size;
-    this->internalSize = FILL_TO_4(this->size);
-    this->values = static_cast<double *> (_mm_malloc(this->internalSize * sizeof(double), 32));
-    std::memcpy(this->values, vec.values,this->internalSize * sizeof(double));
+    std::memcpy(this->values, vec.values,3 * sizeof(double));
 }
 
 Vector::Vector(Vector &&vec) noexcept {
-    this->size = vec.size;
-    this->values = vec.values;
-    vec.values = nullptr;
+    std::memcpy(this->values, vec.values,3 * sizeof(double));
 }
 
 Vector::~Vector() {
-    if (this->values != nullptr) {
-        _mm_free(this->values);
-        this->values = nullptr;
-    }
+
 }
 
 Vector &Vector::operator=(const Vector &vec) {
-    if (this->size != vec.size) {
-        this->size = vec.size;
-        this->internalSize = vec.internalSize;
-        _mm_free(this->values);
-        this->values = static_cast<double *> (_mm_malloc(this->internalSize * sizeof(double), 32));
-    }
-    std::memcpy(this->values, vec.values, this->size * sizeof(double));
+    std::memcpy(this->values, vec.values, 3 * sizeof(double));
     return *this;
-}
-
-int Vector::entryCount(){
-    return size;
 }
 
 double &Vector::get(int index) {
@@ -82,14 +51,14 @@ Vector Vector::cross(const Vector& other){
 
 
 Vector &Vector::add(const Vector &other) {
-    for(int i = 0; i < size; i++){
+    for(int i = 0; i < 3; i++){
         this->values[i] += other.get(i);
     }
     return *this;
 }
 
 Vector &Vector::sub(const Vector &other) {
-    for(int i = 0; i < size; i++){
+    for(int i = 0; i < 3; i++){
         this->values[i] -= other.get(i);
     }
     return *this;
@@ -98,7 +67,7 @@ Vector &Vector::sub(const Vector &other) {
 double Vector::dot(const Vector &other) {
 
     double res = 0;
-    for(int i = 0; i < size; i++){
+    for(int i = 0; i < 3; i++){
         res += this->values[i] * other.values[i];
     }
     return res;
@@ -114,14 +83,14 @@ double Vector::mag() {
 }
 
 Vector &Vector::negate() {
-    for(int i = 0; i < size; i++){
+    for(int i = 0; i < 3; i++){
         this->values[i] = -this->values[i];
     }
     return *this;
 }
 
 Vector &Vector::scale(double scalar) {
-    for(int i = 0; i < size; i++){
+    for(int i = 0; i < 3; i++){
         this->values[i] *= scalar;
     }
     return *this;
@@ -190,7 +159,7 @@ double Vector::operator[](int index) const {
 std::ostream &operator<<(std::ostream &os, const Vector &vector) {
     os << "[";
 
-    for (int i = 0; i < vector.size; i++) {
+    for (int i = 0; i < 3; i++) {
         os << std::setprecision(10) << std::setw(18) << vector.values[i];
     }
 

@@ -9,25 +9,17 @@
 #include <immintrin.h>
 #include <ostream>
 
-#define FILL_TO_4(x) ((x) + ((x) % 4 != 0 ? 4 - (x) % 4 : 0))
-
 class Vector {
 private:
-    int internalSize;
-    double* values = nullptr;
-    int size;
+    double values[3]{};
 public:
 
-
     Vector();
-    Vector(int size);
     Vector(double x, double y, double z);
     Vector(const Vector& vec);
     Vector(Vector&& vec) noexcept ;
     virtual ~Vector();
     Vector& operator=(const Vector& vec);
-
-    int     entryCount();
 
     double& get(int index);
     double  get(int index) const;

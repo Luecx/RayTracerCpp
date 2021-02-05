@@ -32,3 +32,8 @@ MAKROS      = -DMINOR_VERSION=$(MINOR) -DMAJOR_VERSION=$(MAJOR)
 native:
 	mkdir -p $(ROOT)$(FOLDER)
 	$(CC) $(CFLAGS) $(SRC) $(MAKROS) $(LIBS) $(POPCNTFLAGS) -o $(EXE)-x64-$(PREFIX)-native$(SUFFIX)
+
+
+profile:
+	mkdir -p $(ROOT)$(FOLDER)
+	$(CC) $(PFLAGS) $(SRC) $(MAKROS) $(LIBS) $(POPCNTFLAGS) -o $(EXE)-x64-$(PREFIX)-native$(SUFFIX)

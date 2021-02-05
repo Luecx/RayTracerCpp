@@ -11,6 +11,22 @@
 #include "Vector.h"
 #include "types.h"
 
+struct TriangleCoordinate{
+    // note that w is used for node A, u for B and v for C
+    double u,v,w;
+
+    void set(double u, double v) {
+        this->u = u;
+        this->v = v;
+        this->w = 1 - u - v;
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const TriangleCoordinate &coordinate) {
+        os << "u: " << coordinate.u << " v: " << coordinate.v << " w: " << coordinate.w;
+        return os;
+    }
+};
+
 class Triangle {
 private:
     Vector points[3];
