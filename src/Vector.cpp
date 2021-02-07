@@ -166,3 +166,11 @@ std::ostream &operator<<(std::ostream &os, const Vector &vector) {
     return os << "]";
 }
 
+bool Vector::operator==(const Vector &rhs) const {
+    return values[0] == rhs.values[0] && values[1] == rhs.values[1] && values[2] == rhs.values[2];
+}
+
+bool Vector::operator!=(const Vector &rhs) const {
+    return !(rhs == *this);
+}
+

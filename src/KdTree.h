@@ -19,6 +19,9 @@ struct KdTree{
     KdTree* right = nullptr;
     AABB    boundingBox{};
 
+    KdTree(const KdTree& other) = delete;
+    KdTree(KdTree&& other)      = delete;
+
     KdTree(std::vector<Triangle> p_triangles, int depth, int minElements);
 
     KdTree(AABB aabb, std::vector<Triangle> p_triangles, int depth, int minElements);

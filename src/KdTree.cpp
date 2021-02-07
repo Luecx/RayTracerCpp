@@ -4,6 +4,7 @@
 
 #include "KdTree.h"
 
+
 KdTree::KdTree(std::vector<Triangle> p_triangles, int depth, int minElements) {
     create(computeBoundingbox(p_triangles), p_triangles, depth, minElements);
 }
@@ -84,12 +85,12 @@ AABB KdTree::computeBoundingbox(std::vector<Triangle> p_triangles) {
 
     for(Triangle& t:p_triangles){
         for(int n = 0; n < 3; n++){
-            min[0] = std::min(t[n][0], min[0]);
-            min[1] = std::min(t[n][1], min[1]);
-            min[2] = std::min(t[n][2], min[2]);
-            max[0] = std::max(t[n][0], max[0]);
-            max[1] = std::max(t[n][1], max[1]);
-            max[2] = std::max(t[n][2], max[2]);
+            min[0] = std::min(t[n].position[0], min[0]);
+            min[1] = std::min(t[n].position[1], min[1]);
+            min[2] = std::min(t[n].position[2], min[2]);
+            max[0] = std::max(t[n].position[0], max[0]);
+            max[1] = std::max(t[n].position[1], max[1]);
+            max[2] = std::max(t[n].position[2], max[2]);
         }
     }
     return {min, max};

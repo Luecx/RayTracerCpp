@@ -49,6 +49,8 @@ public:
     double& operator[](int index);
     double  operator[](int index) const;
 
+    bool operator==(const Vector &rhs) const;
+    bool operator!=(const Vector &rhs) const;
 
     friend std::ostream &operator<<(std::ostream &os, const Vector &vector);
 

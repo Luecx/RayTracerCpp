@@ -5,66 +5,105 @@
 #include "Triangle.h"
 #include "intersect.h"
 
-Triangle::Triangle() {}
-
-Triangle::Triangle(const Vector &&a, const Vector &&b, const Vector &&c) {
-    this->points[0] = a;
-    this->points[1] = b;
-    this->points[2] = c;
+Triangle:: Triangle() {}
+Triangle:: Triangle(const TriangleNode &&a, const TriangleNode &&b, const TriangleNode &&c) {
+    this->nodes[0] = a;
+    this->nodes[1] = b;
+    this->nodes[2] = c;
 }
-
-Triangle::Triangle(const Vector &a, const Vector &b, const Vector &c) {
-    this->points[0] = a;
-    this->points[1] = b;
-    this->points[2] = c;
+Triangle:: Triangle(const TriangleNode &a, const TriangleNode &b, const TriangleNode &c) {
+    this->nodes[0] = a;
+    this->nodes[1] = b;
+    this->nodes[2] = c;
 }
-
-Triangle::Triangle(const Vector *points) {
-    this->points[0] = points[0];
-    this->points[1] = points[1];
-    this->points[2] = points[2];
+Triangle:: Triangle(const Triangle &other) {
+    this->nodes[0] = other[0];
+    this->nodes[1] = other[1];
+    this->nodes[2] = other[2];
 }
-
-Triangle::Triangle(const Triangle &other) {
-    this->points[0] = other[0];
-    this->points[1] = other[1];
-    this->points[2] = other[2];
+Triangle:: Triangle(Triangle &&other) {
+    this->nodes[0] = other[0];
+    this->nodes[1] = other[1];
+    this->nodes[2] = other[2];
 }
-
-Triangle::Triangle(Triangle &&other) {
-    this->points[0] = other[0];
-    this->points[1] = other[1];
-    this->points[2] = other[2];
-}
-
-Triangle &Triangle::operator=(const Triangle &other){
-    this->points[0] = other[0];
-    this->points[1] = other[1];
-    this->points[2] = other[2];
-    return *this;
-}
-
 Triangle::~Triangle() {
 
 }
-
-const Vector &Triangle::getA() {
-    return points[0];
+Triangle &Triangle::operator=(const Triangle &other){
+    this->nodes[0] = other[0];
+    this->nodes[1] = other[1];
+    this->nodes[2] = other[2];
+    return *this;
 }
 
-const Vector &Triangle::getB() {
-    return points[1];
+const TriangleNode &    Triangle::getA() {
+    return nodes[0];
+}
+const TriangleNode &    Triangle::getB() {
+    return nodes[1];
+}
+const TriangleNode &    Triangle::getC() {
+    return nodes[2];
 }
 
-const Vector &Triangle::getC() {
-    return points[2];
+Vector                  Triangle::center() const{
+    return (nodes[0].position + nodes[1].position + nodes[2].position) * (1/3.0);
+}
+std::ostream &operator<<(std::ostream &os, const Triangle &triangle) {
+    os << "A: " << triangle.nodes[0] << ", B: " << triangle.nodes[1] << ", C: " << triangle.nodes[2];
+    return os;
 }
 
-
-Vector Triangle::center() const{
-    return (points[0] + points[1] + points[2]) * (1/3.0);
+Triangle&   Triangle::operator*=(double scale) {
+    return operator*(scale);
+}
+Triangle&   Triangle::operator* (double scale) {
+    nodes[0].position *= scale;
+    nodes[1].position *= scale;
+    nodes[2].position *= scale;
+    return *this;
+}
+bool        Triangle::operator==(const Triangle &rhs) const {
+    return nodes == rhs.nodes;
+}
+bool        Triangle::operator!=(const Triangle &rhs) const {
+    return !(rhs == *this);
 }
 
+TriangleCoordinate  Triangle::barycentric(Vector &vec){
+    Vector v0 = getB().position - getA().position, v1 = getC().position - getA().position, v2 = vec - getA().position;
+    double d00 = v0 * v0;
+    double d01 = v0 * v1;
+    double d11 = v1 * v1;
+    double d20 = v2 * v0;
+    double d21 = v2 * v1;
+    double denom = d00 * d11 - d01 * d01;
+    double u = (d11 * d20 - d01 * d21) / denom;
+    double v = (d00 * d21 - d01 * d20) / denom;
+    double w = 1.0 - u - v;
+
+    return TriangleCoordinate{u,v,w};
+}
+Vector              Triangle::getNormal         (TriangleCoordinate &coordinate){
+    return nodes[0].normal * coordinate.w +
+           nodes[1].normal * coordinate.u +
+           nodes[2].normal * coordinate.v;
+}
+Vector              Triangle::getPosition       (TriangleCoordinate &coordinate){
+    return nodes[0].position * coordinate.w +
+           nodes[1].position * coordinate.u +
+           nodes[2].position * coordinate.v;
+}
+TriangleNode        Triangle::createNode        (TriangleCoordinate &coordinate){
+    return {
+            getPosition(coordinate),
+            getNormal(coordinate)
+    };
+}
+TriangleNode        Triangle::createNode(Vector &position) {
+    TriangleCoordinate bary = barycentric(position);
+    return createNode(bary);
+}
 
 void Triangle::splitTriangle(Plane &p, std::vector<Triangle> &lhs, std::vector<Triangle> &rhs, double originalSide) {
 
@@ -78,7 +117,7 @@ void Triangle::splitTriangle(Plane &p, std::vector<Triangle> &lhs, std::vector<T
     // count the amount of nodes cut. if we cut more than 1 node, we will not cut the triangle at all
     bool help = false;
     for(int i = 0; i < 3; i++){
-        if((this->points[i] - intersection.base).mag_squared() <= EPSILON){
+        if((this->nodes[i].position - intersection.base).mag_squared() <= EPSILON){
             if(!help){
                 help = true;
             }else{
@@ -88,15 +127,15 @@ void Triangle::splitTriangle(Plane &p, std::vector<Triangle> &lhs, std::vector<T
     }
     // determine if a node is cut or not. if so we can split into two triangles, if not we need 3.
     for(int i = 0; i < 3; i++){
-        if((this->points[i] - intersection.base).mag_squared() <= EPSILON){
+        if((this->nodes[i].position - intersection.base).mag_squared() <= EPSILON){
             Vector p1 = intersection.base;
             Vector p2 = intersection.base + intersection.direction;
 
-            Vector v1 = this->points[(i+1)%3];
-            Vector v2 = this->points[(i+2)%3];
+            Vector v1 = this->nodes[(i+1)%3].position;
+            Vector v2 = this->nodes[(i+2)%3].position;
 
-            Triangle t1 = {p1,p2,v1};
-            Triangle t2 = {p2,p1,v2};
+            Triangle t1 = {createNode(p1),createNode(p2),createNode(v1)};
+            Triangle t2 = {createNode(p2),createNode(p1),createNode(v2)};
 
             if(((t1.center()-p.base) * p.normal) >= 0){
                 // t1 on positive side, t2 on negative side
@@ -129,9 +168,9 @@ void Triangle::splitTriangle(Plane &p, std::vector<Triangle> &lhs, std::vector<T
     // if no vertex was laying on an edge, we need to compute the new triangles.
     // For this purpose, we need to figure out which edges are intersected.
     // we check which node is being cut off.
-    Ray r1 {points[0], points[1]-points[0]};  // connection p0-p1
-    Ray r2 {points[1], points[2]-points[1]};  // connection p1-p2
-    Ray r3 {points[2], points[0]-points[2]};  // connection p0-p2
+    Ray r1 {nodes[0].position, nodes[1].position-nodes[0].position};  // connection p0-p1
+    Ray r2 {nodes[1].position, nodes[2].position-nodes[1].position};  // connection p1-p2
+    Ray r3 {nodes[2].position, nodes[0].position-nodes[2].position};  // connection p0-p2
     double c1 = intersect_ray_plane(r1, p);
     double c2 = intersect_ray_plane(r2, p);
     double c3 = intersect_ray_plane(r3, p);
@@ -145,21 +184,21 @@ void Triangle::splitTriangle(Plane &p, std::vector<Triangle> &lhs, std::vector<T
 
     // B is cutoff
     if(c1 > 0 && c1 < 1 && c2 > 0 && c2 < 1){
-        cutoff  = this->getB();
-        v1      = this->getA();
-        v2      = this->getC();
+        cutoff  = this->getB().position;
+        v1      = this->getA().position;
+        v2      = this->getC().position;
     }
     // A is cutoff
     else if(c1 > 0 && c1 < 1 && c3 > 0 && c3 < 1){
-        cutoff  = this->getA();
-        v1      = this->getB();
-        v2      = this->getC();
+        cutoff  = this->getA().position;
+        v1      = this->getB().position;
+        v2      = this->getC().position;
     }
     // C is cutoff
     else if(c2 > 0 && c2 < 1 && c3 > 0 && c3 < 1){
-        cutoff  = this->getC();
-        v1      = this->getA();
-        v2      = this->getB();
+        cutoff  = this->getC().position;
+        v1      = this->getA().position;
+        v2      = this->getB().position;
     }
     else{
         exit(-1);
@@ -172,9 +211,9 @@ void Triangle::splitTriangle(Plane &p, std::vector<Triangle> &lhs, std::vector<T
         cut2 = h;
     }
 
-    Triangle triC{cut1, cut2, cutoff};
-    Triangle tri1{cut1, cut2, v1};
-    Triangle tri2{  v1, cut2, v2};
+    Triangle triC{createNode(cut1), createNode(cut2), createNode(cutoff)};
+    Triangle tri1{createNode(cut1), createNode(cut2), createNode(v1)};
+    Triangle tri2{createNode(  v1), createNode(cut2), createNode(v2)};
 
     // check if the node which has been cut is on the positive side of the plane (positive normal direction)
     if(((cutoff-p.base) * p.normal) >= 0){
@@ -207,33 +246,5 @@ void Triangle::splitTriangle(Plane &p, std::vector<Triangle> &lhs, std::vector<T
 
 }
 
-Triangle &Triangle::operator*=(double scale) {
-    return operator*(scale);
-}
 
-Triangle &Triangle::operator*(double scale) {
-    points[0] *= scale;
-    points[1] *= scale;
-    points[2] *= scale;
-    return *this;
-}
-
-
-
-std::ostream &operator<<(std::ostream &os, const Triangle &triangle) {
-    os << "A: " << triangle.points[0] << ", B: " << triangle.points[1] << ", C: " << triangle.points[2];
-    return os;
-}
-
-bool Triangle::operator==(const Triangle &rhs) const {
-    return points == rhs.points;
-}
-
-bool Triangle::operator!=(const Triangle &rhs) const {
-    return !(rhs == *this);
-}
-
-const Vector *Triangle::getPoints() const {
-    return points;
-}
 

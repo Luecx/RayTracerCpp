@@ -11,7 +11,10 @@ add_executable(RayTracer
         src/types.h
         src/KdTree.cpp src/KdTree.h
         src/intersect.cpp src/intersect.h
-        src/file_io.h src/file_io.cpp src/Image.cpp src/Image.h)
+        src/file_io.h src/file_io.cpp
+        src/Image.cpp src/Image.h
+        src/render.h
+        src/scene.h)
 
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")

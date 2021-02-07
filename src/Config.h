@@ -13,7 +13,13 @@
 enum FPSettings{
     WIDTH,
     HEIGHT,
+    FOV,                        // horizontal fov
+    PIXEL_ASPECT,               // pixel fov (width / height)
+    ANTIALIASING,               // how many samples in each direction for each pixel to average
+    MAX_THREADS,                // how many threads to use for rendering
     KD_TREE_MAX_DEPTH,
+    KD_TREE_MIN_ELEMENTS,
+    SHADOW_SAMPLES_PER_PIXEL,
     END_DOUBLE_SETTINGS, // always have this at the end
 };
 

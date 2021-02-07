@@ -5,9 +5,15 @@
 #include "Config.h"
 
 Config::Config() {
-    (*this)[WIDTH]              = 720;
-    (*this)[HEIGHT]             = 480;
-    (*this)[KD_TREE_MAX_DEPTH]  = 8;
+    (*this)[WIDTH]                    = 2560;
+    (*this)[HEIGHT]                   = 1440;
+    (*this)[FOV]                      = 80;
+    (*this)[PIXEL_ASPECT]             = 1;
+    (*this)[ANTIALIASING]             = 4;
+    (*this)[MAX_THREADS]              = 24;
+    (*this)[KD_TREE_MAX_DEPTH]        = 10;
+    (*this)[KD_TREE_MIN_ELEMENTS]     = 2;
+    (*this)[SHADOW_SAMPLES_PER_PIXEL] = 2;
 }
 
 Config::Config(const Config &config) {

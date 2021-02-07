@@ -15,31 +15,31 @@ Ray intersect_triangle_plane(Triangle &t, Plane &p) {
 
     Vector r1{}, r2{}, r3{};
 
-    double s1 = (t[0] - p.base) * p.normal;
-    double s2 = (t[1] - p.base) * p.normal;
-    double s3 = (t[2] - p.base) * p.normal;
+    double s1 = (t[0].position - p.base) * p.normal;
+    double s2 = (t[1].position - p.base) * p.normal;
+    double s3 = (t[2].position - p.base) * p.normal;
 
     // check if any points lie directly in the plane. If two lay on the plane, we consider it as NO intersection!
     if (std::abs(s1) <= EPSILON || std::abs(s2) <= EPSILON || std::abs(s3) <= EPSILON) {
         if (std::abs(s1) <= EPSILON) {
-            p1 = t[0];
+            p1 = t[0].position;
             foundFirst = true;
         }
         if (std::abs(s2) <= EPSILON) {
             if (foundFirst) {
-                p2 = t[1];
+                p2 = t[1].position;
                 return {p1, p2};
             } else {
-                p1 = t[1];
+                p1 = t[1].position;
                 foundFirst = true;
             }
         }
         if (std::abs(s3) <= EPSILON) {
             if (foundFirst) {
-                p2 = t[2];
+                p2 = t[2].position;
                 return {p1, p2};
             } else {
-                p1 = t[2];
+                p1 = t[2].position;
                 foundFirst = true;
             }
         }
@@ -53,7 +53,7 @@ Ray intersect_triangle_plane(Triangle &t, Plane &p) {
     }
 
     for (int i = 0; i < 3; i++) {
-        Ray temp{t[i], t[(i + 1) % 3] - t[i]};
+        Ray temp{t[i].position, t[(i + 1) % 3].position - t[i].position};
         double r = intersect_ray_plane(temp, p);
         if (abs(r) < INFTY && r > EPSILON && r < (1 - EPSILON)) {
             if (foundFirst) {
@@ -103,11 +103,18 @@ double intersect_ray_aabb(Ray &r, AABB &aabb) {
     return tmin;
 }
 
-double intersect_ray_kdtree(Ray &r, KdTree &tree, TriangleCoordinate &coordinate) {
+double intersect_ray_kdtree(Ray &r, KdTree &tree, HitData &hitData) {
     if (!tree.triangles.empty() || tree.left == nullptr || tree.right == nullptr) {
-        double minDist = INFTY;
+        double minDist = hitData.distance;
+        TriangleCoordinate closestHit{};
         for (Triangle &tri:tree.triangles) {
-            minDist = std::min(minDist, intersect_ray_triangle(r, tri, coordinate));
+            double dist = intersect_ray_triangle(r, tri, closestHit);
+            if(dist < minDist){
+                hitData.coordinate = closestHit;
+                hitData.triangle   = tri;
+
+                minDist            = dist;
+            }
         }
         return minDist;
     } else {
@@ -122,18 +129,18 @@ double intersect_ray_kdtree(Ray &r, KdTree &tree, TriangleCoordinate &coordinate
         if (dLeft == INFTY && dRight == INFTY) return INFTY;
         // search left node first
         if (dLeft < dRight) {
-            double dist = intersect_ray_kdtree(r, *left, coordinate);
+            double dist = intersect_ray_kdtree(r, *left, hitData);
             if (std::abs(dist) < INFTY) {
                 return dist;
             } else {
-                return intersect_ray_kdtree(r, *right, coordinate);
+                return intersect_ray_kdtree(r, *right, hitData);
             }
         } else {
-            double dist = intersect_ray_kdtree(r, *right, coordinate);
+            double dist = intersect_ray_kdtree(r, *right, hitData);
             if (std::abs(dist) < INFTY) {
                 return dist;
             } else {
-                return intersect_ray_kdtree(r, *left, coordinate);
+                return intersect_ray_kdtree(r, *left, hitData);
             }
         }
     }
@@ -142,14 +149,14 @@ double intersect_ray_kdtree(Ray &r, KdTree &tree, TriangleCoordinate &coordinate
 double intersect_ray_triangle(Ray &r, Triangle &t, TriangleCoordinate &coordinate) {
 
     double a, f, u, v;
-    Vector edge1 = t[1] - t[0];
-    Vector edge2 = t[2] - t[0];
+    Vector edge1 = t[1].position - t[0].position;
+    Vector edge2 = t[2].position - t[0].position;
     Vector h{r.direction.cross(edge2)};
     a = edge1 * h;
     if (a > -EPSILON && a < EPSILON)
         return INFTY;    // This ray is parallel to this triangle.
     f = 1.0 / a;
-    Vector s = r.base - t[0];
+    Vector s = r.base - t[0].position;
     u = s * h * f;
     if (u < 0.0 || u > 1.0)
         return INFTY;

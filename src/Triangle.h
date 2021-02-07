@@ -11,6 +11,7 @@
 #include "Vector.h"
 #include "types.h"
 
+
 struct TriangleCoordinate{
     // note that w is used for node A, u for B and v for C
     double u,v,w;
@@ -27,9 +28,32 @@ struct TriangleCoordinate{
     }
 };
 
+
+struct TriangleNode {
+    Vector position;
+    Vector normal;
+
+    bool operator==(const TriangleNode &rhs) const {
+        return position == rhs.position &&
+               normal == rhs.normal;
+    }
+
+    bool operator!=(const TriangleNode &rhs) const {
+        return !(rhs == *this);
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const TriangleNode &node) {
+        os << "position: " << node.position << " normal: " << node.normal;
+        return os;
+    }
+
+};
+
 class Triangle {
 private:
-    Vector points[3];
+
+    TriangleNode nodes[3];
+
 public:
 
     Triangle();
@@ -40,7 +64,7 @@ public:
      * @param b The position for b
      * @param c The position for c
      */
-    Triangle(const Vector &&a, const Vector &&b, const Vector &&c);
+    Triangle(const TriangleNode &&a, const TriangleNode &&b, const TriangleNode &&c);
 
     /**
      * Creates a triangle with points a, b, c
@@ -48,12 +72,8 @@ public:
      * @param b The position for b
      * @param c The position for c
      */
-    Triangle(const Vector &a, const Vector &b, const Vector &c);
-    /**
-     * Creates a triangle from a list of points that is always 3 in size and starts with a and ends with c.
-     * @param points The points to be inserted into the triangle.
-     */
-    Triangle(const Vector *points);
+    Triangle(const TriangleNode &a, const TriangleNode &b, const TriangleNode &c);
+
     /**
      * Copies another Triangle
      * @param other The Triangle which is to be copied.
@@ -66,7 +86,11 @@ public:
      */
     Triangle(Triangle &&other);
 
-
+    /**
+     * copies another triangle
+     * @param other
+     * @return
+     */
     Triangle &operator=(const Triangle &other);
 
     ~Triangle();
@@ -74,15 +98,15 @@ public:
     /**
      * @return a
      */
-    const Vector& getA();
+    const TriangleNode& getA();
     /**
      * @return b
      */
-    const Vector& getB();
+    const TriangleNode& getB();
     /**
      * @return c
      */
-    const Vector& getC();
+    const TriangleNode& getC();
 
     /**
      * @return The center of the triangle.
@@ -119,27 +143,68 @@ public:
      * @param index is zero at a, one at b, and so on.
      * @return a at 0, b at 1, and c at 2.
      */
-    inline Vector&   operator[](int index){
-        return points[index];
+    inline TriangleNode&   operator[](int index){
+        return nodes[index];
     }
 
      /**
      * @param index is zero at a, one at b, and so on.
      * @return a at 0, b at 1, and c at 2.
      */
-     inline Vector    operator[](int index) const{
-         return points[index];
+     inline TriangleNode    operator[](int index) const{
+         return nodes[index];
     }
 
-    const Vector *getPoints() const;
-
-
+    /**
+     * equality comparison. compares the nodes
+     * @param rhs
+     * @return
+     */
     bool operator==(const Triangle &rhs) const;
 
+    /**
+     * inequality comparison. compares the nodes
+     * @param rhs
+     * @return
+     */
     bool operator!=(const Triangle &rhs) const;
 
+    /**
+     * stream output operator
+     * @param os
+     * @param triangle
+     * @return
+     */
     friend std::ostream &operator<<(std::ostream &os, const Triangle &triangle);
 
+    /**
+     * computes barycentric coordinates for a given position
+     * @param vec
+     * @return
+     */
+    TriangleCoordinate  barycentric(Vector& vec);
+
+    /*
+     * barycentric interpolation for normal
+     */
+    Vector              getNormal  (TriangleCoordinate &coordinate);
+
+    /*
+     * barycentric interpolation for position
+     */
+    Vector              getPosition(TriangleCoordinate &coordinate);
+
+    /**
+     * creates a new node containing normal/position etc for a given triangle coordinate
+     * @return
+     */
+    TriangleNode        createNode(TriangleCoordinate &coordinate);
+
+    /**
+     * creates a new node containing normal/position etc for a given triangle coordinate
+     * @return
+     */
+    TriangleNode        createNode(Vector &position);
 };
 
 

@@ -23,4 +23,15 @@ struct AABB {
     Vector max{};
 };
 
+struct Light {
+    Vector position{};
+    double radius = 0;
+};
+
+struct Camera {
+    Vector position{};
+    Vector direction{};
+    Vector up{};
+};
+
 #endif //RAYTRACER_PLANE_H
